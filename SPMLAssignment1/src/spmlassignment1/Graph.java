@@ -15,6 +15,11 @@ public class Graph {
     private Edge[] edges;
     private Vertex[] vertices; 
     
+    /**
+     * Constructor function for Graph.
+     * @param edges
+     * @param vertices 
+     */
     public Graph(Edge[] edges, Vertex[] vertices) {
         this.edges = edges;
         this.vertices = vertices;
