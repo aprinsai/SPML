@@ -5,6 +5,9 @@
  */
 package spmlassignment1;
 
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+
 /**
  *
  * Plan: eerst graph maken, daarna priority queue voor 'intermediate step' om te kiezen welke vertex je connect
@@ -18,35 +21,73 @@ public class SPMLAssignment1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Vertex a = new Vertex(0);
-        Vertex b = new Vertex(INF);
-        Vertex c = new Vertex(INF);
-        Vertex d = new Vertex(INF);
-        Vertex e = new Vertex(INF);
-        Vertex f = new Vertex(INF);
-        Vertex g = new Vertex(INF);
-        Vertex h = new Vertex(INF);
-        Vertex i = new Vertex(INF);
-        Vertex[] vertices = {a,b,c,d,e,f,g,h,i};
-        
-        Edge ab = new Edge(a,b,4);
-        Edge ah = new Edge(a,h,8);
-        Edge bh = new Edge(b,h,11);
-        Edge bc = new Edge(b,c,8);
-        Edge ci = new Edge(c,i,2);
-        Edge cf = new Edge(c,f,4);
-        Edge cd = new Edge(c,d,7);
-        Edge de = new Edge(d,e,9);
-        Edge fd = new Edge(f,d,14);
-        Edge fe = new Edge(f,e,10);        
-        Edge gi = new Edge(g,i,6);
-        Edge gf = new Edge(g,f,2);
-        Edge hg = new Edge(h,g,1);
-        Edge ih = new Edge(i,h,7);
-        Edge[] edges = {ab,ah,bh,bc,ci,cf,cd,de,fd,fe,gi,gf,hg,ih};
-        
-        Graph graph = new Graph(edges, vertices);
+        Graph graph = createGraph();
+        WeightComparator comparator = new WeightComparator();
+        PriorityQueue<Vertex> frontier = new PriorityQueue(comparator); 
+        ArrayList<Vertex> vertices = graph.getVertices();
 
+        for(Vertex v : vertices)
+            frontier.add(v);
+        
+        System.out.println(frontier);
+
+        Vertex u = extract_min(frontier);
+        
+        System.out.println(u);
+        
+        updateWeights(graph, u, frontier);
+
+        System.out.println(frontier);
     }
+
+    private static Graph createGraph() {
+        ArrayList<Vertex> vertices = new ArrayList();
+
+        vertices.add(new Vertex(0));  //a 0
+        vertices.add(new Vertex(INF));//b 1
+        vertices.add(new Vertex(INF));//c 2
+        vertices.add(new Vertex(INF));//d 3
+        vertices.add(new Vertex(INF));//e 4
+        vertices.add(new Vertex(INF));//f 5
+        vertices.add(new Vertex(INF));//g 6
+        vertices.add(new Vertex(INF));//h 7
+        vertices.add(new Vertex(INF));//i 8
+        
+        ArrayList<Edge> edges = new ArrayList();
+        edges.add(new Edge(vertices.get(0),vertices.get(1),4));
+        edges.add(new Edge(vertices.get(0),vertices.get(7),8));
+        edges.add(new Edge(vertices.get(1),vertices.get(7),11));
+        edges.add(new Edge(vertices.get(1),vertices.get(2),8));
+        edges.add(new Edge(vertices.get(2),vertices.get(8),2));
+        edges.add(new Edge(vertices.get(2),vertices.get(5),4));
+        edges.add(new Edge(vertices.get(2),vertices.get(3),7));
+        edges.add(new Edge(vertices.get(3),vertices.get(4),9));
+        edges.add(new Edge(vertices.get(5),vertices.get(3),14));
+        edges.add(new Edge(vertices.get(5),vertices.get(4),10));        
+        edges.add(new Edge(vertices.get(6),vertices.get(8),6));
+        edges.add(new Edge(vertices.get(6),vertices.get(5),2));
+        edges.add(new Edge(vertices.get(7),vertices.get(6),1));
+        edges.add(new Edge(vertices.get(8),vertices.get(7),7));
+        
+        return new Graph(edges, vertices);
+    }
+
+    private static Vertex extract_min(PriorityQueue<Vertex> frontier) {
+        return frontier.poll(); //retrieves and removes first element. 
+    }
+
+    private static void updateWeights(Graph graph, Vertex u, PriorityQueue<Vertex> frontier) {
+        ArrayList<Edge> edges = graph.getEdges();
+        for(Edge e : edges) {
+            Vertex v = e.isConnected(u);
+            if(v != null && e.getWeight() < v.getKey()) {
+                frontier.remove(v);
+                v.setKey(e.getWeight());
+                frontier.add(v);
+            }
+        }
+    }
+    
+    
     
 }

@@ -12,11 +12,24 @@ import java.util.ArrayList;
  * @author Anouk & Pleun
  */
 public class Graph {
-    private Edge[] edges;
-    private Vertex[] vertices; 
+    private ArrayList<Edge> edges;
+    private ArrayList<Vertex> vertices; 
     
-    public Graph(Edge[] edges, Vertex[] vertices) {
+    public Graph(ArrayList<Edge> edges, ArrayList<Vertex> vertices) {
         this.edges = edges;
         this.vertices = vertices;
+    }
+    
+    public ArrayList<Vertex> getVertices() {
+        return this.vertices;
+    }
+    
+    public ArrayList<Edge> getEdges() {
+        return this.edges;
+    }
+    
+    @Override
+    public String toString() {
+        return null;
     }
 }

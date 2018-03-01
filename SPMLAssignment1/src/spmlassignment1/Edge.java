@@ -26,12 +26,28 @@ public class Edge {
         this.weight = weight;
     }
     
+    public Vertex isConnected(Vertex v) {
+        if(v.equals(firstNode))
+            return secondNode;
+        else if (v.equals(secondNode))
+            return firstNode;
+        else return null;
+    }
+    
     /**
      * Getter function for weight.
      * @return weight
      */
     public double getWeight() {
         return this.weight;
+    }
+    
+    public Vertex getFirst() {
+        return this.firstNode;
+    }
+    
+    public Vertex getSecond() {
+        return this.secondNode;
     }
 }
 
