@@ -35,7 +35,9 @@ public class MST_Prim {
         //Add root node (since we can't connect the root node to anything in the main run function.
         Vertex root = frontier.poll();
         mst.addVertex(root);
+        updateWeights(root);
         //System.out.println(frontier);
+        
     }
 
     /**
@@ -46,11 +48,12 @@ public class MST_Prim {
             Vertex u = frontier.poll();
             System.out.printf("U: %s",u);
             Vertex prev = mst.getVertices().get(mst.getVertices().size()-1);
-            System.out.printf(" Prev: %s",prev);
+            System.out.printf(" Parent: %s",prev);
             Edge e = new Edge(prev,u,u.getKey());
-            updateWeights(u);
             mst.addVertex(u);
             mst.addEdge(e);
+            graph.removeEdge(e);
+            updateWeights(u);
             System.out.println(frontier);
         }
     }

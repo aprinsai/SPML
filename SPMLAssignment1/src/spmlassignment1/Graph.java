@@ -36,6 +36,10 @@ public class Graph {
         edges.add(e);
     }
     
+    public void removeEdge(Edge e) {
+        edges.remove(e);
+    }
+    
     @Override
     public String toString() {
         String s = "";
