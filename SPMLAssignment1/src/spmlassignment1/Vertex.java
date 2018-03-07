@@ -10,30 +10,43 @@ package spmlassignment1;
  * @author Anouk
  */
 public class Vertex {
-    private double weight;
+    private double key;
     
     /**
      * Constructor function for Vertex.
-     * @param weight 
+     * @param key 
      */
-    public Vertex(double weight){
-        this.weight = weight;
+    public Vertex(double key){
+        this.key = key;
+    }
+    
+    public boolean isConnected(Vertex vertex, Edge[] edges) {
+        for (Edge edge : edges) {
+            //If the nodes are connected. (this refers to this Vertex object.)
+            if((edge.getFirst() == this && edge.getSecond() == vertex))// || (edge.getFirst() == vertex && edge.getSecond() == this)
+                return true;
+        }
+        return false;
     }
     
     /**
-     * Setter function for weight.
-     * @param weight 
+     * Setter function for getKey.
+     * @param key 
      */
-    public void setWeight(double weight) {
-        this.weight = weight;
+    public void setKey(double key) {
+        this.key = key;
     }
     
     /**
-     * Getter function for weight
-     * @return weight
+     * Getter function for getKey
+     * @return getKey
      */
-    public double getWeight() {
-        return this.weight;
+    public double getKey() {
+        return this.key;
     }
     
+    @Override
+    public String toString() {
+        return String.valueOf(this.key);
+    }
 }

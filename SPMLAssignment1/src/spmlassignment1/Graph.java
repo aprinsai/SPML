@@ -12,16 +12,35 @@ import java.util.ArrayList;
  * @author Anouk & Pleun
  */
 public class Graph {
-    private Edge[] edges;
-    private Vertex[] vertices; 
+    private ArrayList<Edge> edges;
+    private ArrayList<Vertex> vertices; 
     
-    /**
-     * Constructor function for Graph.
-     * @param edges
-     * @param vertices 
-     */
-    public Graph(Edge[] edges, Vertex[] vertices) {
+    public Graph(ArrayList<Edge> edges, ArrayList<Vertex> vertices) {
         this.edges = edges;
         this.vertices = vertices;
+    }
+    
+    public ArrayList<Vertex> getVertices() {
+        return vertices;
+    }
+    
+    public ArrayList<Edge> getEdges() {
+        return edges;
+    }
+    
+    public void addVertex(Vertex v) {
+        vertices.add(v);
+    }
+    
+    public void addEdge(Edge e) {
+        edges.add(e);
+    }
+    
+    @Override
+    public String toString() {
+        String s = "";
+        for(Edge e : edges)
+            s+= e+"\n";
+        return s;
     }
 }
