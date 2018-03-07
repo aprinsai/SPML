@@ -49,5 +49,9 @@ public class Edge {
     public Vertex getSecond() {
         return this.secondNode;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("%s <--%f--> %s",firstNode,weight,secondNode);
+    }
 }
-

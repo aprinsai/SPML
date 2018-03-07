@@ -46,7 +46,7 @@ public class MST_Prim {
             Vertex u = frontier.poll();
             System.out.printf("U: %s",u);
             Vertex prev = mst.getVertices().get(mst.getVertices().size()-1);
-            System.out.printf("Prev: %s",prev);
+            System.out.printf(" Prev: %s",prev);
             Edge e = new Edge(prev,u,u.getKey());
             updateWeights(u);
             mst.addVertex(u);

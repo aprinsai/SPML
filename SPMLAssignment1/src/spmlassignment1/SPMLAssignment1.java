@@ -22,24 +22,10 @@ public class SPMLAssignment1 {
      */
     public static void main(String[] args) {
         Graph graph = createGraph();
-        //Initialize MST as an empty graph.
-        Graph mst = new Graph(new ArrayList<Edge>(),new ArrayList<Vertex>());
-        WeightComparator comparator = new WeightComparator();
-        PriorityQueue<Vertex> frontier = new PriorityQueue(comparator); 
-        ArrayList<Vertex> vertices = graph.getVertices();
-
-        for(Vertex v : vertices)
-            frontier.add(v);
-        
-        System.out.println(frontier);
-
-        Vertex u = frontier.poll();
-        
-        System.out.println(u);
-        
-        updateWeights(graph, u, frontier);
-
-        System.out.println(frontier);
+        MST_Prim prim = new MST_Prim(graph);
+        prim.initialize();
+        prim.run();
+        System.out.printf("Final MST: \n%s",prim.getMST());
     }
 
     /**
