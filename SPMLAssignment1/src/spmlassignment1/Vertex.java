@@ -11,13 +11,15 @@ package spmlassignment1;
  */
 public class Vertex {
     private double key;
+    private String name;
     
     /**
      * Constructor function for Vertex.
      * @param key 
      */
-    public Vertex(double key){
+    public Vertex(double key, String name){
         this.key = key;
+        this.name = name;
     }
     
     public boolean isConnected(Vertex vertex, Edge[] edges) {
@@ -42,11 +44,11 @@ public class Vertex {
      * @return getKey
      */
     public double getKey() {
-        return this.key;
+        return key;
     }
     
     @Override
     public String toString() {
-        return String.valueOf(this.key);
+        return name;
     }
 }

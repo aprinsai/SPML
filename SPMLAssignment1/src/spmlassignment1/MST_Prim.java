@@ -16,7 +16,7 @@ public class MST_Prim {
     public MST_Prim(Graph graph) {
         this.graph = graph;
         //Initialize MST as an empty graph.
-        mst = new Graph(new ArrayList<Edge>(), new ArrayList());
+        mst = new Graph(new ArrayList<Edge>(), new ArrayList<Vertex>());
         //Priority Queue with comparator
         WeightComparator comparator = new WeightComparator();
         frontier = new PriorityQueue(comparator);
@@ -47,7 +47,7 @@ public class MST_Prim {
         while (!frontier.isEmpty()) {
             Vertex u = frontier.poll();
             System.out.printf("U: %s",u);
-            Vertex prev = mst.getVertices().get(mst.getVertices().size()-1);
+            Vertex prev = mst.getVertices().get(mst.getVertices().size()-1); // maybe a mistake, do this in more steps
             System.out.printf(" Parent: %s",prev);
             Edge e = new Edge(prev,u,u.getKey());
             mst.addVertex(u);

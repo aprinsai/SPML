@@ -34,15 +34,15 @@ public class SPMLAssignment1 {
     private static Graph createGraph() {
         ArrayList<Vertex> vertices = new ArrayList();
 
-        vertices.add(new Vertex(0));  //a 0
-        vertices.add(new Vertex(INF));//b 1
-        vertices.add(new Vertex(INF));//c 2
-        vertices.add(new Vertex(INF));//d 3
-        vertices.add(new Vertex(INF));//e 4
-        vertices.add(new Vertex(INF));//f 5
-        vertices.add(new Vertex(INF));//g 6
-        vertices.add(new Vertex(INF));//h 7
-        vertices.add(new Vertex(INF));//i 8
+        vertices.add(new Vertex(0, "a"));  //a 0
+        vertices.add(new Vertex(INF, "b"));//b 1
+        vertices.add(new Vertex(INF, "c"));//c 2
+        vertices.add(new Vertex(INF, "d"));//d 3
+        vertices.add(new Vertex(INF, "e"));//e 4
+        vertices.add(new Vertex(INF, "f"));//f 5
+        vertices.add(new Vertex(INF, "g"));//g 6
+        vertices.add(new Vertex(INF, "h"));//h 7
+        vertices.add(new Vertex(INF, "i"));//i 8
         
         ArrayList<Edge> edges = new ArrayList();
         edges.add(new Edge(vertices.get(0),vertices.get(1),4)); //ab
