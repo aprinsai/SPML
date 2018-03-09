@@ -12,14 +12,16 @@ package spmlassignment1;
 public class Vertex {
     private double key;
     private String name;
+    private Vertex parent;
     
     /**
      * Constructor function for Vertex.
      * @param key 
      */
-    public Vertex(double key, String name){
+    public Vertex(double key, String name, Vertex parent){
         this.key = key;
         this.name = name;
+        this.parent = parent;
     }
     
     public boolean isConnected(Vertex vertex, Edge[] edges) {
@@ -45,6 +47,18 @@ public class Vertex {
      */
     public double getKey() {
         return key;
+    }
+    
+    /**
+     * 
+     * @param parent 
+     */
+    public void setParent(Vertex parent) {
+        this.parent = parent;
+    }
+    
+    public Vertex getParent() {
+        return parent;
     }
     
     @Override

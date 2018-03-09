@@ -30,13 +30,6 @@ public class MST_Prim {
         ArrayList<Vertex> vertices = graph.getVertices();
         for (Vertex v : vertices)
             frontier.add(v);
-        //System.out.println(frontier);      
-        
-        //Add root node (since we can't connect the root node to anything in the main run function.
-        Vertex root = frontier.poll();
-        mst.addVertex(root);
-        updateWeights(root);
-        //System.out.println(frontier);
         
     }
 
@@ -47,13 +40,11 @@ public class MST_Prim {
         while (!frontier.isEmpty()) {
             Vertex u = frontier.poll();
             System.out.printf("U: %s",u);
-            Vertex prev = mst.getVertices().get(mst.getVertices().size()-1); // maybe a mistake, do this in more steps
-            System.out.printf(" Parent: %s",prev);
-            Edge e = new Edge(prev,u,u.getKey());
+            System.out.printf(" Parent: %s",u.getParent());
+            Edge e = new Edge(u.getParent(),u,u.getKey());
             mst.addVertex(u);
             mst.addEdge(e);
-            graph.removeEdge(e);
-            updateWeights(u);
+            updateKey(u);
             System.out.println(frontier);
         }
     }
@@ -72,13 +63,14 @@ public class MST_Prim {
      * @param u Vertex just added to the MST.
      * @param frontier (expanded nodes =/= INF.)
      */
-    private void updateWeights(Vertex u) {
+    private void updateKey(Vertex u) {
         ArrayList<Edge> edges = graph.getEdges();
         for (Edge e : edges) {
             Vertex v = e.isConnected(u);
-            if (v != null && e.getWeight() < v.getKey()) {
+            if (v != null && e.getWeight() < v.getKey() && !mst.contains(v)) {
                 frontier.remove(v);
                 v.setKey(e.getWeight());
+                v.setParent(u);
                 frontier.add(v);
             }
         }

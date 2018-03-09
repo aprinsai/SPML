@@ -36,8 +36,11 @@ public class Graph {
         edges.add(e);
     }
     
-    public void removeEdge(Edge e) {
-        edges.remove(e);
+    public boolean contains (Vertex vertex) {
+        for (Vertex v : vertices)
+            if (v.equals(vertex))
+                return true;
+        return false;
     }
     
     @Override
