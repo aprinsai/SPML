@@ -53,19 +53,19 @@ public class SPMLAssignment1 {
         edges.add(new Edge(vertices.get(0),vertices.get(4),2));
         edges.add(new Edge(vertices.get(0),vertices.get(3),2));
         edges.add(new Edge(vertices.get(0),vertices.get(2),100));*/
-        edges.add(new Edge(vertices.get(0),vertices.get(7),8)); //ah
-        edges.add(new Edge(vertices.get(1),vertices.get(7),8)); //bh
-        edges.add(new Edge(vertices.get(1),vertices.get(2),8)); //bc
-        edges.add(new Edge(vertices.get(2),vertices.get(8),8)); //ci
-        edges.add(new Edge(vertices.get(2),vertices.get(5),8)); //cf
-        edges.add(new Edge(vertices.get(2),vertices.get(3),8)); //cd
-        edges.add(new Edge(vertices.get(3),vertices.get(4),8)); //de
-        edges.add(new Edge(vertices.get(5),vertices.get(3),8)); //fd
-        edges.add(new Edge(vertices.get(5),vertices.get(4),8)); //fe
-        edges.add(new Edge(vertices.get(6),vertices.get(8),8)); //gi
-        edges.add(new Edge(vertices.get(6),vertices.get(5),8)); //gf
-        edges.add(new Edge(vertices.get(7),vertices.get(6),8)); //hg
-        edges.add(new Edge(vertices.get(8),vertices.get(7),8)); //ih
+        edges.add(new Edge(vertices.get(0),vertices.get(7),80)); //ah
+        edges.add(new Edge(vertices.get(1),vertices.get(7),100)); //bh
+        edges.add(new Edge(vertices.get(1),vertices.get(2),8000)); //bc
+        edges.add(new Edge(vertices.get(2),vertices.get(8),2000)); //ci
+        edges.add(new Edge(vertices.get(2),vertices.get(5),30)); //cf
+        edges.add(new Edge(vertices.get(2),vertices.get(3),7000)); //cd
+        edges.add(new Edge(vertices.get(3),vertices.get(4),9000)); //de
+        edges.add(new Edge(vertices.get(5),vertices.get(3),400000000)); //fd
+        edges.add(new Edge(vertices.get(5),vertices.get(4),1)); //fe
+        edges.add(new Edge(vertices.get(6),vertices.get(8),6000)); //gi
+        edges.add(new Edge(vertices.get(6),vertices.get(5),200)); //gf
+        edges.add(new Edge(vertices.get(7),vertices.get(6),100)); //hg
+        edges.add(new Edge(vertices.get(8),vertices.get(7),7000)); //ih
         
         return new Graph(edges, vertices);
     }
