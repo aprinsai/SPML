@@ -12,6 +12,7 @@ public class MST_Prim {
     Graph graph;
     Graph mst;
     PriorityQueue<Vertex> frontier;
+    public int count=0;
 
     public MST_Prim(Graph graph) {
         this.graph = graph;
@@ -67,6 +68,7 @@ public class MST_Prim {
         ArrayList<Edge> edges = graph.getEdges();
         for (Edge e : edges) {
             Vertex v = e.isConnected(u);
+            count ++;
             if (v != null && e.getWeight() < v.getKey() && !mst.contains(v)) {
                 frontier.remove(v);
                 v.setKey(e.getWeight());

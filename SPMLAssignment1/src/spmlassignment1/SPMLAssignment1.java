@@ -26,6 +26,7 @@ public class SPMLAssignment1 {
         prim.initialize();
         prim.run();
         System.out.printf("Final MST: \n%s",prim.getMST());
+        System.out.println(prim.count);
     }
 
     /**
@@ -42,23 +43,29 @@ public class SPMLAssignment1 {
         vertices.add(new Vertex(INF, "f", null));//f 5
         vertices.add(new Vertex(INF, "g", null));//g 6
         vertices.add(new Vertex(INF, "h", null));//h 7
-        vertices.add(new Vertex(INF, "i", null));//i 8
+        vertices.add(new Vertex(INF, "i", null));//i 8*/
         
         ArrayList<Edge> edges = new ArrayList();
-        edges.add(new Edge(vertices.get(0),vertices.get(1),4)); //ab
+        /**edges.add(new Edge(vertices.get(0),vertices.get(1),4)); //ab
+        edges.add(new Edge(vertices.get(1),vertices.get(2),6));
+        edges.add(new Edge(vertices.get(2),vertices.get(3),2));
+        edges.add(new Edge(vertices.get(4),vertices.get(3),3));
+        edges.add(new Edge(vertices.get(0),vertices.get(4),2));
+        edges.add(new Edge(vertices.get(0),vertices.get(3),2));
+        edges.add(new Edge(vertices.get(0),vertices.get(2),100));*/
         edges.add(new Edge(vertices.get(0),vertices.get(7),8)); //ah
-        edges.add(new Edge(vertices.get(1),vertices.get(7),11)); //bh
+        edges.add(new Edge(vertices.get(1),vertices.get(7),8)); //bh
         edges.add(new Edge(vertices.get(1),vertices.get(2),8)); //bc
-        edges.add(new Edge(vertices.get(2),vertices.get(8),2)); //ci
-        edges.add(new Edge(vertices.get(2),vertices.get(5),4)); //cf
-        edges.add(new Edge(vertices.get(2),vertices.get(3),7)); //cd
-        edges.add(new Edge(vertices.get(3),vertices.get(4),9)); //de
-        edges.add(new Edge(vertices.get(5),vertices.get(3),14)); //fd
-        edges.add(new Edge(vertices.get(5),vertices.get(4),10)); //fe
-        edges.add(new Edge(vertices.get(6),vertices.get(8),6)); //gi
-        edges.add(new Edge(vertices.get(6),vertices.get(5),2)); //gf
-        edges.add(new Edge(vertices.get(7),vertices.get(6),1)); //hg
-        edges.add(new Edge(vertices.get(8),vertices.get(7),7)); //ih
+        edges.add(new Edge(vertices.get(2),vertices.get(8),8)); //ci
+        edges.add(new Edge(vertices.get(2),vertices.get(5),8)); //cf
+        edges.add(new Edge(vertices.get(2),vertices.get(3),8)); //cd
+        edges.add(new Edge(vertices.get(3),vertices.get(4),8)); //de
+        edges.add(new Edge(vertices.get(5),vertices.get(3),8)); //fd
+        edges.add(new Edge(vertices.get(5),vertices.get(4),8)); //fe
+        edges.add(new Edge(vertices.get(6),vertices.get(8),8)); //gi
+        edges.add(new Edge(vertices.get(6),vertices.get(5),8)); //gf
+        edges.add(new Edge(vertices.get(7),vertices.get(6),8)); //hg
+        edges.add(new Edge(vertices.get(8),vertices.get(7),8)); //ih
         
         return new Graph(edges, vertices);
     }
