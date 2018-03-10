@@ -22,16 +22,23 @@ public class SPMLAssignment1 {
      */
     public static void main(String[] args) {
         GraphMaker gm = new GraphMaker();
-        Graph g1 = gm.makeGraph(5, 4, 5, 10, 0, 5);
-        Graph g2 = gm.makeFullyConnectedGraph(5, 5, 10, 0, 10);
-        System.out.println(g1);
-        System.out.println("--------------------");
-        System.out.println(g2);
-        
-        Graph graph = createGraph();
-        MST_Prim prim = new MST_Prim(graph);
+        int nrV = 35;
+        int nrE = 2*nrV;
+        Graph g1 = gm.makeGraph(nrV, nrE, 5, 10);
+        //Graph g2 = gm.makeFullyConnectedGraph(5, 5, 10);
+        //System.out.println(g1);
+        MST_Prim prim = new MST_Prim(g1);
         prim.initialize();
         prim.run();
+        System.out.printf("Final MST: \n%s",prim.getMST());
+        System.out.println("Count: "+prim.count);
+//        System.out.println("--------------------");
+//        System.out.println(g2);
+        
+//        Graph graph = createGraph();
+//        MST_Prim prim = new MST_Prim(graph);
+//        prim.initialize();
+//        prim.run();
 //        System.out.printf("Final MST: \n%s",prim.getMST());
 //        System.out.println(prim.count);
     }
@@ -53,13 +60,7 @@ public class SPMLAssignment1 {
         vertices.add(new Vertex(INF, "i", null));//i 8*/
         
         ArrayList<Edge> edges = new ArrayList();
-        /**edges.add(new Edge(vertices.get(0),vertices.get(1),4)); //ab
-        edges.add(new Edge(vertices.get(1),vertices.get(2),6));
-        edges.add(new Edge(vertices.get(2),vertices.get(3),2));
-        edges.add(new Edge(vertices.get(4),vertices.get(3),3));
-        edges.add(new Edge(vertices.get(0),vertices.get(4),2));
-        edges.add(new Edge(vertices.get(0),vertices.get(3),2));
-        edges.add(new Edge(vertices.get(0),vertices.get(2),100));*/
+        edges.add(new Edge(vertices.get(0),vertices.get(1),4)); //ab
         edges.add(new Edge(vertices.get(0),vertices.get(7),80)); //ah
         edges.add(new Edge(vertices.get(1),vertices.get(7),100)); //bh
         edges.add(new Edge(vertices.get(1),vertices.get(2),8000)); //bc

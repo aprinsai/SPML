@@ -5,14 +5,14 @@ import java.util.PriorityQueue;
 
 /**
  *
- * @author Pleun
+ * @author Pleun & noukie
  */
 public class MST_Prim {
 
     Graph graph;
     Graph mst;
     PriorityQueue<Vertex> frontier;
-    public int count=0;
+    public int count=0; //We know, public variables, but it's just a counter who cares.
 
     public MST_Prim(Graph graph) {
         this.graph = graph;

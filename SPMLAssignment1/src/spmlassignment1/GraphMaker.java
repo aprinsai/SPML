@@ -5,40 +5,38 @@ import java.util.Collections;
 import java.util.Random;
 
 /**
- *
+ * There is probably a whole bunch of shit that you could improve no doubt but we just needed to get it done quick and dirty sooo there you go. 
  * @author Pleun
  */
 public class GraphMaker {
 
     private int nrOfVertices;
     private int nrOfEdges;
-    private double minEWeight;
-    private double maxEWeight;
-    private double minKWeight;
-    private double maxKWeight;
+    private double minWeight;
+    private double maxWeight;
 
     /**
      * @param nrOfVertices
      * @param nrOfEdges
-     * @param minEWeight
-     * @param maxEWeight
-     * @param minKWeight
-     * @param maxKWeight
+     * @param minWeight
+     * @param maxWeight
      * @return a graph with the nr of vertices and edges given. Throws error if
-     * the graph can't be connected.
+     * the graph is impossible.
      */
-    public Graph makeGraph(int nrOfVertices, int nrOfEdges, double minEWeight, double maxEWeight, double minKWeight, double maxKWeight) {
-        if (nrOfEdges < nrOfVertices - 1)
+    public Graph makeGraph(int nrOfVertices, int nrOfEdges, double minWeight, double maxWeight) {
+        //minimum is a tree, max a fully connected. Otherwise error
+        if (nrOfEdges < nrOfVertices - 1 || nrOfEdges > nrOfVertices*(nrOfVertices-1)/2) 
             throw new IllegalArgumentException("Illegal nr of edges/vertices.");
+        
+        //For allowed trees:
         this.nrOfEdges = nrOfEdges;
         this.nrOfVertices = nrOfVertices;
-        this.minEWeight = minEWeight;
-        this.maxEWeight = maxEWeight;
-        this.minEWeight = minKWeight;
-        this.maxEWeight = maxKWeight;
+        this.minWeight = minWeight;
+        this.maxWeight = maxWeight;
 
         ArrayList<Vertex> vertices = makeVertices();
-        //System.out.println(vertices);
+        vertices.get(0).setKey(0); // Root node. Since the vertices are shuffled it doesn't matter anyway.
+        System.out.println(vertices);
         ArrayList<Edge> edges = makeEdges(vertices);
         //System.out.println(edges);
         return new Graph(edges, vertices);
@@ -46,16 +44,14 @@ public class GraphMaker {
 
     /**
      * @param nrOfVertices
-     * @param nrOfEdges
-     * @param minEWeight edge
-     * @param maxEWeight
-     * @param minKWeight Key
-     * @param maxKWeight
+     * @param minWeight edge
+     * @param maxWeight
+
      * @return a fully connected graph with the nr of vertices given.
      */
-    public Graph makeFullyConnectedGraph(int nrOfVertices,double minEWeight, double maxEWeight, double minKWeight, double maxKWeight) {
+    public Graph makeFullyConnectedGraph(int nrOfVertices,double minWeight, double maxWeight) {
         int n = nrOfVertices * (nrOfVertices - 1) / 2;
-        return makeGraph(nrOfVertices, n, minEWeight, maxEWeight, minKWeight, maxKWeight);
+        return makeGraph(nrOfVertices, n, minWeight, maxWeight);
     }
 
     /**
@@ -64,24 +60,16 @@ public class GraphMaker {
     private ArrayList<Vertex> makeVertices() {
         ArrayList<Vertex> vertices = new ArrayList();
         for (int i = 0; i < nrOfVertices; i++)
-            vertices.add(new Vertex(getRandK(), Integer.toString(i), null));
+            vertices.add(new Vertex(Double.POSITIVE_INFINITY, Integer.toString(i), null));
         return vertices;
     }
 
     /**
      * @return a random double between minEWeight and maxEWeight.
      */
-    private double getRandE() {
+    private double getRand() {
         Random rnd = new Random();
-        return minEWeight + (maxEWeight - minEWeight) * rnd.nextDouble();
-    }
-
-    /**
-     * @return a random double between minWeight and maxWeight.
-     */
-    private double getRandK() {
-        Random rnd = new Random();
-        return minKWeight + (maxKWeight - minKWeight) * rnd.nextDouble();
+        return minWeight + (maxWeight - minWeight) * rnd.nextDouble();
     }
 
     private ArrayList<Edge> makeEdges(ArrayList<Vertex> vertices) {
@@ -89,10 +77,10 @@ public class GraphMaker {
         Collections.shuffle(vertices); //Shuffle the vertices 
         //Connect at least all vertices once, by connecting them all randomly (shuffled).
         for (int i = 0; i < vertices.size() - 1; i++)
-            edges.add(new Edge(vertices.get(i), vertices.get(i + 1), getRandE()));
+            edges.add(new Edge(vertices.get(i), vertices.get(i + 1), getRand()));
         while (edges.size() < nrOfEdges) {
             Collections.shuffle(vertices);
-            Edge rndEdge = new Edge(vertices.get(0), vertices.get(1), getRandE());
+            Edge rndEdge = new Edge(vertices.get(0), vertices.get(1), getRand());
             if (!hasEdge(edges, rndEdge))
                 edges.add(rndEdge);
         }
