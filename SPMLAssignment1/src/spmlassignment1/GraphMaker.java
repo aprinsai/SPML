@@ -36,7 +36,7 @@ public class GraphMaker {
 
         ArrayList<Vertex> vertices = makeVertices();
         vertices.get(0).setKey(0); // Root node. Since the vertices are shuffled it doesn't matter anyway.
-        System.out.println(vertices);
+        //System.out.println(vertices);
         ArrayList<Edge> edges = makeEdges(vertices);
         //System.out.println(edges);
         return new Graph(edges, vertices);

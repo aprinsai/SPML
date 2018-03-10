@@ -22,16 +22,16 @@ public class SPMLAssignment1 {
      */
     public static void main(String[] args) {
         GraphMaker gm = new GraphMaker();
-        int nrV = 35;
-        int nrE = 2*nrV;
-        Graph g1 = gm.makeGraph(nrV, nrE, 5, 10);
-        //Graph g2 = gm.makeFullyConnectedGraph(5, 5, 10);
-        //System.out.println(g1);
-        MST_Prim prim = new MST_Prim(g1);
-        prim.initialize();
-        prim.run();
-        System.out.printf("Final MST: \n%s",prim.getMST());
-        System.out.println("Count: "+prim.count);
+        
+        for(int nrV = 3; nrV <=10; nrV++) 
+            for(int nrE = nrV-1; nrE <= nrV*(nrV-1)/2; nrE++) {
+                Graph g1 = gm.makeGraph(nrV, nrE, 5, 10);
+                MST_Prim prim = new MST_Prim(g1);
+                prim.initialize();
+                prim.run();
+                //System.out.printf("Final MST: \n%s",prim.getMST());
+                System.out.printf("%d\t%d\t%d\n",nrV,nrE,prim.count2);
+            }
 //        System.out.println("--------------------");
 //        System.out.println(g2);
         

@@ -12,7 +12,8 @@ public class MST_Prim {
     Graph graph;
     Graph mst;
     PriorityQueue<Vertex> frontier;
-    public int count=0; //We know, public variables, but it's just a counter who cares.
+    public int count1=0; //We know, public variables, but it's just a counter who cares.
+    public int count2=0; //We know, public variables, but it's just a counter who cares.
 
     public MST_Prim(Graph graph) {
         this.graph = graph;
@@ -68,8 +69,9 @@ public class MST_Prim {
         ArrayList<Edge> edges = graph.getEdges();
         for (Edge e : edges) {
             Vertex v = e.isConnected(u);
-            count ++;
+            count1 ++;
             if (v != null && e.getWeight() < v.getKey() && !mst.contains(v)) {
+                count2++;
                 frontier.remove(v);
                 v.setKey(e.getWeight());
                 v.setParent(u);
