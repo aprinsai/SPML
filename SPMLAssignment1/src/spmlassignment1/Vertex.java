@@ -64,5 +64,6 @@ public class Vertex {
     @Override
     public String toString() {
         return name;
+        //return String.format("%s : %f",name,key);
     }
 }

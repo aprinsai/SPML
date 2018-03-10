@@ -40,13 +40,13 @@ public class MST_Prim {
     public void run() {
         while (!frontier.isEmpty()) {
             Vertex u = frontier.poll();
-            System.out.printf("U: %s",u);
-            System.out.printf(" Parent: %s",u.getParent());
+//            System.out.printf("U: %s",u);
+//            System.out.printf(" Parent: %s",u.getParent());
             Edge e = new Edge(u.getParent(),u,u.getKey());
             mst.addVertex(u);
             mst.addEdge(e);
             updateKey(u);
-            System.out.println(frontier);
+//            System.out.println(frontier);
         }
     }
 

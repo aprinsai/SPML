@@ -21,12 +21,19 @@ public class SPMLAssignment1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        GraphMaker gm = new GraphMaker();
+        Graph g1 = gm.makeGraph(5, 4, 5, 10, 0, 5);
+        Graph g2 = gm.makeFullyConnectedGraph(5, 5, 10, 0, 10);
+        System.out.println(g1);
+        System.out.println("--------------------");
+        System.out.println(g2);
+        
         Graph graph = createGraph();
         MST_Prim prim = new MST_Prim(graph);
         prim.initialize();
         prim.run();
-        System.out.printf("Final MST: \n%s",prim.getMST());
-        System.out.println(prim.count);
+//        System.out.printf("Final MST: \n%s",prim.getMST());
+//        System.out.println(prim.count);
     }
 
     /**
