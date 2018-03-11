@@ -1,46 +1,46 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package spmlassignment1;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 /**
+ * Main class of the assignment. Runs a bunch of tests in the main.
  *
- * Plan: eerst graph maken, daarna priority queue voor 'intermediate step' om te kiezen welke vertex je connect
- * Die remove je dan en voeg je toe aan je MST (wss array ofzo)
  * @author Anouk & Pleun
  */
 public class SPMLAssignment1 {
 
     private static final double INF = Double.POSITIVE_INFINITY;
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         GraphMaker gm = new GraphMaker();
+        ArrayList<Double> cat = new ArrayList();
+        cat.add(1.0);
+        cat.add(10.0);
+        cat.add(50.0);
+        cat.add(100.0);
+        cat.add(500.0);
+        cat.add(1000.0);
+        cat.add(2000.0);
+        cat.add(5000.0);
+        cat.add(10000.0);
+
+        int nrV = 50;
+        int nrE = 100;
         
-        for(int nrV = 3; nrV <=10; nrV++) 
-            for(int nrE = nrV-1; nrE <= nrV*(nrV-1)/2; nrE++) {
-                Graph g1 = gm.makeGraph(nrV, nrE, 5, 10);
-                MST_Prim prim = new MST_Prim(g1);
-                prim.initialize();
-                prim.run();
-                //System.out.printf("Final MST: \n%s",prim.getMST());
-                System.out.printf("%d\t%d\t%d\n",nrV,nrE,prim.count2);
-            }
-//        System.out.println("--------------------");
-//        System.out.println(g2);
-        
-//        Graph graph = createGraph();
-//        MST_Prim prim = new MST_Prim(graph);
-//        prim.initialize();
-//        prim.run();
-//        System.out.printf("Final MST: \n%s",prim.getMST());
-//        System.out.println(prim.count);
+        for (int i = 0; i < cat.size(); i++) { 
+            double minWeight = 1.0;
+            double maxWeight = cat.get(i)+1;
+            Graph g1 = gm.makeGraph(nrV, nrE, minWeight, maxWeight);
+            MST_Prim prim = new MST_Prim(g1);
+            prim.initialize();
+            prim.run();
+            //System.out.printf("Final MST: \n%s",prim.getMST());
+            System.out.printf("%d\t%d\t%f\t%d\n", nrV, nrE, maxWeight-minWeight, prim.count);
+        }
     }
 
     /**
@@ -58,44 +58,23 @@ public class SPMLAssignment1 {
         vertices.add(new Vertex(INF, "g", null));//g 6
         vertices.add(new Vertex(INF, "h", null));//h 7
         vertices.add(new Vertex(INF, "i", null));//i 8*/
-        
+
         ArrayList<Edge> edges = new ArrayList();
-        edges.add(new Edge(vertices.get(0),vertices.get(1),4)); //ab
-        edges.add(new Edge(vertices.get(0),vertices.get(7),80)); //ah
-        edges.add(new Edge(vertices.get(1),vertices.get(7),100)); //bh
-        edges.add(new Edge(vertices.get(1),vertices.get(2),8000)); //bc
-        edges.add(new Edge(vertices.get(2),vertices.get(8),2000)); //ci
-        edges.add(new Edge(vertices.get(2),vertices.get(5),30)); //cf
-        edges.add(new Edge(vertices.get(2),vertices.get(3),7000)); //cd
-        edges.add(new Edge(vertices.get(3),vertices.get(4),9000)); //de
-        edges.add(new Edge(vertices.get(5),vertices.get(3),400000000)); //fd
-        edges.add(new Edge(vertices.get(5),vertices.get(4),1)); //fe
-        edges.add(new Edge(vertices.get(6),vertices.get(8),6000)); //gi
-        edges.add(new Edge(vertices.get(6),vertices.get(5),200)); //gf
-        edges.add(new Edge(vertices.get(7),vertices.get(6),100)); //hg
-        edges.add(new Edge(vertices.get(8),vertices.get(7),7000)); //ih
-        
+        edges.add(new Edge(vertices.get(0), vertices.get(1), 4)); //ab
+        edges.add(new Edge(vertices.get(0), vertices.get(7), 80)); //ah
+        edges.add(new Edge(vertices.get(1), vertices.get(7), 100)); //bh
+        edges.add(new Edge(vertices.get(1), vertices.get(2), 8000)); //bc
+        edges.add(new Edge(vertices.get(2), vertices.get(8), 2000)); //ci
+        edges.add(new Edge(vertices.get(2), vertices.get(5), 30)); //cf
+        edges.add(new Edge(vertices.get(2), vertices.get(3), 7000)); //cd
+        edges.add(new Edge(vertices.get(3), vertices.get(4), 9000)); //de
+        edges.add(new Edge(vertices.get(5), vertices.get(3), 400000000)); //fd
+        edges.add(new Edge(vertices.get(5), vertices.get(4), 1)); //fe
+        edges.add(new Edge(vertices.get(6), vertices.get(8), 6000)); //gi
+        edges.add(new Edge(vertices.get(6), vertices.get(5), 200)); //gf
+        edges.add(new Edge(vertices.get(7), vertices.get(6), 100)); //hg
+        edges.add(new Edge(vertices.get(8), vertices.get(7), 7000)); //ih
+
         return new Graph(edges, vertices);
     }
-
-    /**
-     * Updates the weights within the frontier.
-     * @param graph
-     * @param u Vertex just added to the MST.
-     * @param frontier (expanded nodes =/= INF.)
-     */
-    private static void updateWeights(Graph graph, Vertex u, PriorityQueue<Vertex> frontier) {
-        ArrayList<Edge> edges = graph.getEdges();
-        for(Edge e : edges) {
-            Vertex v = e.isConnected(u);
-            if(v != null && e.getWeight() < v.getKey()) {
-                frontier.remove(v);
-                v.setKey(e.getWeight());
-                frontier.add(v);
-            }
-        }
-    }
-    
-    
-    
 }
