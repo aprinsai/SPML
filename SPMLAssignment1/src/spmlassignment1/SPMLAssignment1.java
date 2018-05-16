@@ -15,32 +15,12 @@ public class SPMLAssignment1 {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        GraphMaker gm = new GraphMaker();
-        ArrayList<Double> cat = new ArrayList();
-        cat.add(1.0);
-        cat.add(10.0);
-        cat.add(50.0);
-        cat.add(100.0);
-        cat.add(500.0);
-        cat.add(1000.0);
-        cat.add(2000.0);
-        cat.add(5000.0);
-        cat.add(10000.0);
-
-        int nrV = 50;
-        int nrE = 100;
-        
-        for (int i = 0; i < cat.size(); i++) { 
-            double minWeight = 1.0;
-            double maxWeight = cat.get(i)+1;
-            Graph g1 = gm.makeGraph(nrV, nrE, minWeight, maxWeight);
-            MST_Prim prim = new MST_Prim(g1);
-            prim.initialize();
-            prim.run();
-            //System.out.printf("Final MST: \n%s",prim.getMST());
-            System.out.printf("%d\t%d\t%f\t%d\n", nrV, nrE, maxWeight-minWeight, prim.count);
-        }
+    public static void main(String[] args) {        
+        Graph graph = createGraph();
+        MST_Prim prim = new MST_Prim(graph);
+        prim.initialize();
+        prim.run();
+        System.out.printf("Final mst: %s",prim.getMST());
     }
 
     /**
