@@ -38,7 +38,7 @@ if __name__ == '__main__':
     # these are the variables that should be used for variable elimination
 
 #    print 'values', net.values 
-    print 'probabilities', net.probabilities
+#    print 'probabilities', net.probabilities
 #    print 'parents', net.parents
 #    print 'nodes', net.nodes
     

@@ -4,6 +4,8 @@
 Implementation of the variable elimination algorithm for AISPAML assignment 3
 
 """
+from itertools import permutations
+import pandas as pd
 
 class VariableElimination():
 
@@ -50,17 +52,20 @@ class VariableElimination():
                 if keyO in list(prob.columns.values):
                     # Now it's hardcoded as Earthquake.
                     # How to index df by variable name?
-                    newProb = prob[prob.Earthquake == valueO]
+                    newProb = prob[prob.get(keyO) == valueO]
                     probabilities[keyP] = newProb
             
             
-        print probabilities
+       # print probabilities
         
-#        for var in elim_order:
-#            for keyP, prob in probabilities.items():
-#                if var in list(prob.columns.values):
-                    #print prob
-                  
+        for elim in elim_order:
+            print elim
+            for key1, prob1 in probabilities.items():
+                for key2, prob2 in probabilities.items():
+                    if elim in list(prob1.columns.values) and elim in list(prob2.columns.values):
+                        #print("elim:", elim)
+                        df = pd.merge(prob1, prob2, on=elim)
+                        print df          
         #product_formula = sum(self.network.probabilities)
         
         
