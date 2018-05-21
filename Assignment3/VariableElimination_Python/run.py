@@ -18,7 +18,6 @@ if __name__ == '__main__':
                 pList.append(p2)
         # Remove duplicates
         pList = list(set(pList))
-        print "pList: {}".format(pList)
         # Add all leafs first. 
         leafNodes = [x for x in nodes if x not in pList]
         
@@ -38,23 +37,28 @@ if __name__ == '__main__':
     
     # these are the variables that should be used for variable elimination
 #    print 'values', net.values 
-#    print 'probabilities', net.probabilities
+    print 'probabilities', net.probabilities
     print 'parents', net.parents
 #    print 'nodes', net.nodes
     
     # Create object
     ve = VariableElimination(net)
+    
     # Observed variables
-    observed = {}
+    observed = {'Earthquake': 'True', 'Burglary': 'False'}
     
     # Query
     query = 'Alarm'
     
     # Elimination order
     elim_order = sort(net.nodes, net.parents, query)
-    print elim_order
+    #print elim_order
+    print ""
     
-     
+    ve.run('Alarm', observed, elim_order)
+    
+     # What are the query /observed variables?
+     # Write 
     
     # Make your variable elimination code in a seperate file: 'variable_elim'. 
     # you can call this file as follows:

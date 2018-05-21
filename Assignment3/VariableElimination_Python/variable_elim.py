@@ -28,3 +28,30 @@ class VariableElimination():
                 for the query variable
 
         """
+        # What is the product formula
+        # The reduced formula based on network structure? -- Is already given in the dataset
+        # Identify factors and reduce observed variables 
+        # Fix an elimination ordering -- Done
+        # For every variable in elim_order:
+            # Multiply factors containing that variable
+            # Sum out the variable to obtain new factor
+            # Remove the multiplied factors from the list and add the summed out factor
+        # Normalize. 
+        
+        
+        # Dictionary is the reduced formula of factors. 
+        # Reducing oberved variable = eliminate all values with incorrect observed value.
+                
+        # Reduce observed.
+        probabilities = self.network.probabilities
+        for keyO, valueO in observed.items():
+            for keyP, valueP in probabilities.items():
+                if keyO in list(valueP.columns.values):
+                    # Noukie we were so dumb hahahaha this one line fixed everything...
+                    valueP = valueP[keyO == valueO]
+                    print valueP
+                    
+        #product_formula = sum(self.network.probabilities)
+        
+        
+        
