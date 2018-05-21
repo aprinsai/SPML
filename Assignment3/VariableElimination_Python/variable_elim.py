@@ -57,15 +57,21 @@ class VariableElimination():
             
             
        # print probabilities
-        
+        dflist = []
         for elim in elim_order:
-            print elim
             for key1, prob1 in probabilities.items():
                 for key2, prob2 in probabilities.items():
-                    if elim in list(prob1.columns.values) and elim in list(prob2.columns.values):
-                        #print("elim:", elim)
-                        df = pd.merge(prob1, prob2, on=elim)
-                        print df          
+                    if elim in list(prob1.columns.values) and elim in list(prob2.columns.values) :
+                        if key1!=key2:
+                            #print("elim:", elim)
+                            columnvalues1 = list(prob1.columns.values)
+                            columnvalues2 = list(prob2.columns.values)
+                            columnvalues = list(set(columnvalues1).intersection(columnvalues2))
+                            columnvalues.remove('prob')
+                            dflist.append(pd.merge(prob1, prob2, on=columnvalues, suffixes=('_1', '_2')))
+                        else:
+                            dflist.append(prob1)
+        print dflist
         #product_formula = sum(self.network.probabilities)
         
         
