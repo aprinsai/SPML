@@ -8,7 +8,6 @@ from read_bayesnet import BayesNet
 from variable_elim import *
 
 if __name__ == '__main__':
-<<<<<<< HEAD
     
     def sort(nodes, parents, query):  
         # Make list of all parents
@@ -32,8 +31,6 @@ if __name__ == '__main__':
             sortedList.remove(query)
         return sortedList
     
-=======
->>>>>>> c09d40f3905966ef7f039020058df2f9600d4e64
     # the class BayesNet represents a Bayesian network from a .bif file
     # in several variables
     net = BayesNet('earthquake.bif') 
@@ -77,7 +74,7 @@ if __name__ == '__main__':
     # evidence = {'Burglary': 'True'}
 
     # determine you heuristics before you call the run function. This can be done in this file or in a seperate file
->>>>>>> c09d40f3905966ef7f039020058df2f9600d4e64
+
     # The heuristics either specifying the elimination ordering (list) or it is a function that determines the elimination ordering
     # given the network. An simple example is: 
     # elim_order = net.nodes
@@ -85,9 +82,4 @@ if __name__ == '__main__':
 	#call the elimination ordering function for example as follows:   
     #ve.run('Alarm', evidence, elim_order)
 
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> c09d40f3905966ef7f039020058df2f9600d4e64
  
