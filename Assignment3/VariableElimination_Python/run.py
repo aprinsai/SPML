@@ -39,14 +39,14 @@ if __name__ == '__main__':
 
 #    print 'values', net.values 
     print 'probabilities', net.probabilities
-    print 'parents', net.parents
+#    print 'parents', net.parents
 #    print 'nodes', net.nodes
     
     # Create object
     ve = VariableElimination(net)
     
     # Observed variables
-    observed = {'Earthquake': 'True', 'Burglary': 'False'}
+    observed = {'Earthquake': 'True'}
     
     # Query
     query = 'Alarm'

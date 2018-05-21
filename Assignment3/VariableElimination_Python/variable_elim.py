@@ -30,7 +30,7 @@ class VariableElimination():
         """
         # What is the product formula
         # The reduced formula based on network structure? -- Is already given in the dataset
-        # Identify factors and reduce observed variables 
+        # Identify factors and reduce observed variables -- Sorta done needs flexibility
         # Fix an elimination ordering -- Done
         # For every variable in elim_order:
             # Multiply factors containing that variable
@@ -44,13 +44,23 @@ class VariableElimination():
                 
         # Reduce observed.
         probabilities = self.network.probabilities
+        newProb = []
         for keyO, valueO in observed.items():
-            for keyP, valueP in probabilities.items():
-                if keyO in list(valueP.columns.values):
-                    # Noukie we were so dumb hahahaha this one line fixed everything...
-                    valueP = valueP[keyO == valueO]
-                    print valueP
-                    
+            for keyP, prob in probabilities.items():
+                if keyO in list(prob.columns.values):
+                    # Now it's hardcoded as Earthquake.
+                    # How to index df by variable name?
+                    newProb = prob[prob.Earthquake == valueO]
+                    probabilities[keyP] = newProb
+            
+            
+        print probabilities
+        
+#        for var in elim_order:
+#            for keyP, prob in probabilities.items():
+#                if var in list(prob.columns.values):
+                    #print prob
+                  
         #product_formula = sum(self.network.probabilities)
         
         
