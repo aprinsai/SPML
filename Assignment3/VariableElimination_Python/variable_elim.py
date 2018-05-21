@@ -28,7 +28,6 @@ class VariableElimination():
                 for the query variable
 
         """
-<<<<<<< HEAD
         # What is the product formula
         # The reduced formula based on network structure? -- Is already given in the dataset
         # Identify factors and reduce observed variables 
@@ -55,6 +54,4 @@ class VariableElimination():
         #product_formula = sum(self.network.probabilities)
         
         
-        
-=======
->>>>>>> c09d40f3905966ef7f039020058df2f9600d4e64
+

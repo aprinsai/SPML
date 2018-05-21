@@ -39,7 +39,7 @@ if __name__ == '__main__':
     net = BayesNet('earthquake.bif') 
     
     # these are the variables that should be used for variable elimination
-<<<<<<< HEAD
+
 #    print 'values', net.values 
     print 'probabilities', net.probabilities
     print 'parents', net.parents
@@ -63,24 +63,15 @@ if __name__ == '__main__':
     
      # What are the query /observed variables?
      # Write 
-=======
-    print 'values', net.values 
-    print 'probabilities', net.probabilities
-    print 'parents', net.parents
-    print 'nodes', net.nodes
-
->>>>>>> c09d40f3905966ef7f039020058df2f9600d4e64
     
     # Make your variable elimination code in a seperate file: 'variable_elim'. 
     # you can call this file as follows:
     #ve = VariableElimination(net)
-<<<<<<< HEAD
     
     # If variables are known beforehand, you can represent them in the following way: 
     # evidence = {'Burglary': 'True'}
 
     # determine your heuristics before you call the run function. This can be done in this file or in a seperate file
-=======
 
     # If variables are known beforehand, you can represent them in the following way: 
     # evidence = {'Burglary': 'True'}
