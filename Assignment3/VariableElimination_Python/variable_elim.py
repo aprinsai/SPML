@@ -57,7 +57,7 @@ class VariableElimination():
             
             
        # print probabilities
-        dflist = []
+        factorList = []
         for elim in elim_order:
             for key1, prob1 in probabilities.items():
                 for key2, prob2 in probabilities.items():
@@ -68,10 +68,16 @@ class VariableElimination():
                             columnvalues2 = list(prob2.columns.values)
                             columnvalues = list(set(columnvalues1).intersection(columnvalues2))
                             columnvalues.remove('prob')
-                            dflist.append(pd.merge(prob1, prob2, on=columnvalues, suffixes=('_1', '_2')))
+                            factorList.append(pd.merge(prob1, prob2, on=columnvalues, suffixes=('_1', '_2')))
                         else:
-                            dflist.append(prob1)
-        print dflist
+                            factorList.append(prob1)
+        
+        for table in factorList:
+            # Okay so this is in a way kinda sweet because it's only one line, on the other hand it's kind of horrificly unreadable. Anyway, lambda expressions work like lambda x: (True if expression else False). So here it works like: if the table.columns.values contain the columns prob_1 and prob_2, a new row called newProb is added which equals prob_1 * prob_2. Appply function is basically a mapping.
+            table['newProb'] = table.apply(lambda row: (row['prob_1']*row['prob_2'] if 'prob_1' in list(table.columns.values) and 'prob_2' in list(table.columns.values) else False), axis = 1)
+            
+            
+        print factorList
         #product_formula = sum(self.network.probabilities)
         
         
