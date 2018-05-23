@@ -64,22 +64,14 @@ class VariableElimination():
                 for key2, prob2 in probabilities.items():
                     if elim in list(prob1.columns.values) and elim in list(prob2.columns.values) :
                         if key1!=key2:
-                            #print("elim:", elim)
                             columnvalues1 = list(prob1.columns.values)
                             columnvalues2 = list(prob2.columns.values)
                             columnvalues = list(set(columnvalues1).intersection(columnvalues2))
                             columnvalues.remove('prob')
                             factorList.append(prob1.merge(prob2, on=columnvalues, suffixes=('_1', '_2')))
-                            #Remove old prob columns
-                            #print 
-                            
-                            #factorList.drop(['prob_1', 'prob_2'], axis = 1, inplace = True)
                         else:
                             factorList.append(prob1)
-                            # Must be before dropping prob_1, prob_2. 
                             
-                            
-                            #factorList.rename(columns = {'prob1': 'newProb'}, inplace = True)
         # Remove all unnecessary columns.
         # First for all factors with just 1 variable.
         map(lambda factor: (factor.rename(columns = {'prob1': 'newProb'}, inplace = True) if 'prob1' in list(factor.columns.values) else False), factorList)
