@@ -56,7 +56,8 @@ class VariableElimination():
                     probabilities[keyP] = newProb
             
             
-       # print probabilities
+        # Prepare a list of all the factors containing certain variables.
+        # @noukie: Is this actually correct, or do we need to do more stuff with the data?
         factorList = []
         for elim in elim_order:
             for key1, prob1 in probabilities.items():
@@ -68,14 +69,29 @@ class VariableElimination():
                             columnvalues2 = list(prob2.columns.values)
                             columnvalues = list(set(columnvalues1).intersection(columnvalues2))
                             columnvalues.remove('prob')
-                            factorList.append(pd.merge(prob1, prob2, on=columnvalues, suffixes=('_1', '_2')))
+                            factorList.append(prob1.merge(prob2, on=columnvalues, suffixes=('_1', '_2')))
+                            #Remove old prob columns
+                            #print 
+                            
+                            #factorList.drop(['prob_1', 'prob_2'], axis = 1, inplace = True)
                         else:
                             factorList.append(prob1)
+                            # Must be before dropping prob_1, prob_2. 
+                            
+                            
+                            #factorList.rename(columns = {'prob1': 'newProb'}, inplace = True)
+        # Remove all unnecessary columns.
+        # First for all factors with just 1 variable.
+        map(lambda factor: (factor.rename(columns = {'prob1': 'newProb'}, inplace = True) if 'prob1' in list(factor.columns.values) else False), factorList)
+        map(lambda factor: (factor.drop('prob', axis = 1, inplace = True) if 'prob' in list(factor.columns.values) else False), factorList)
+        # Then for all factors with multiple variables. 
+        map(lambda factor: (factor.drop(['prob_1', 'prob_2'], axis = 1, inplace = True) if 'prob_1' in list(factor.columns.values) and 'prob_2' in list(factor.columns.values) else False), factorList)
+        #print factorList
         
+        # Multiplication
         for table in factorList:
             # Okay so this is in a way kinda sweet because it's only one line, on the other hand it's kind of horrificly unreadable. Anyway, lambda expressions work like lambda x: (True if expression else False). So here it works like: if the table.columns.values contain the columns prob_1 and prob_2, a new row called newProb is added which equals prob_1 * prob_2. Appply function is basically a mapping.
             table['newProb'] = table.apply(lambda row: (row['prob_1']*row['prob_2'] if 'prob_1' in list(table.columns.values) and 'prob_2' in list(table.columns.values) else False), axis = 1)
-            
             
         print factorList
         #product_formula = sum(self.network.probabilities)
