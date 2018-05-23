@@ -43,7 +43,7 @@ class VariableElimination():
         
         # Dictionary is the reduced formula of factors. 
         # Reducing oberved variable = eliminate all values with incorrect observed value.
-                
+        
         # Reduce observed.
         probabilities = self.network.probabilities
         newProb = []
@@ -54,41 +54,55 @@ class VariableElimination():
                     # How to index df by variable name?
                     newProb = prob[prob.get(keyO) == valueO]
                     probabilities[keyP] = newProb
-            
-            
+        
+        #print probabilities
         # Prepare a list of all the factors containing certain variables.
-        # @noukie: Is this actually correct, or do we need to do more stuff with the data?
         factorList = []
+        for key, prob in probabilities.items():
+            factorList.append(prob)
+        
+#        print factorList
         for elim in elim_order:
-            for key1, prob1 in probabilities.items():
-                for key2, prob2 in probabilities.items():
-                    if elim in list(prob1.columns.values) and elim in list(prob2.columns.values) :
-                        if key1!=key2:
-                            columnvalues1 = list(prob1.columns.values)
-                            columnvalues2 = list(prob2.columns.values)
-                            columnvalues = list(set(columnvalues1).intersection(columnvalues2))
-                            columnvalues.remove('prob')
-                            factorList.append(prob1.merge(prob2, on=columnvalues, suffixes=('_1', '_2')))
-                        else:
-                            factorList.append(prob1)
-        
-        # Multiplication
-        for table in factorList:
-            # Okay so this is in a way kinda sweet because it's only one line, on the other hand it's kind of horrificly unreadable. Anyway, lambda expressions work like lambda x: (True if expression else False). So here it works like: if the table.columns.values contain the columns prob_1 and prob_2, a new row called newProb is added which equals prob_1 * prob_2. Appply function is basically a mapping.
-            table['newProb'] = table.apply(lambda row: (row['prob_1']*row['prob_2'] if 'prob_1' in list(table.columns.values) and 'prob_2' in list(table.columns.values) else row['prob']), axis = 1)
+            print factorList
+            multList = []
+            for probDist in factorList:
+                print probDist.loc['prob']
+                if elim in list(probDist.columns.values):
+                    multList.append(probDist)
+            print multList, "multlist1"
+            multList = reduce(lambda x,y: x.merge(y, on = elim, suffixes=('_1', '_2')), multList)
             
-        # Remove all unnecessary columns.
-        # First for all factors with just 1 variable.
-#        for factor in factorList: 
-#            if 'prob1' in list(factor.columns.values)
-        map(lambda factor: (factor.rename(columns = {'prob1': 'newProb'}, axis = 1, inplace = True) if 'prob1' in list(factor.columns.values) else False), factorList)
-        map(lambda factor: (factor.drop('prob', axis = 1, inplace = True) if 'prob' in list(factor.columns.values) else False), factorList)
-#        # Then for all factors with multiple variables. 
-        map(lambda factor: (factor.drop(['prob_1', 'prob_2'], axis = 1, inplace = True) if 'prob_1' in list(factor.columns.values) and 'prob_2' in list(factor.columns.values) else False), factorList)
-#        #print factorList
-        print factorList
-        
-        
-        
-        
+            
+            # Multiply
+            multList['newProb'] = multList.apply(lambda row: (row['prob_1']*row['prob_2'] if 'prob_1' in list(multList.columns.values) and 'prob_2' in list(multList.columns.values) else row['prob']), axis = 1)
+            
+            # Clean up
+            if 'prob' in list(multList.columns.values):
+                multList.drop('prob', axis = 1, inplace = True)
+            if 'prob_1' in list(multList.columns.values) and 'prob_2' in list(multList.columns.values):
+                multList.drop('prob_1', axis = 1, inplace = True)
+                multList.drop('prob_2', axis = 1, inplace = True)
+            
+            multList.rename({'newProb':'prob'}, axis = 1, inplace = True)
+            
+#            print multList
+#            print ""
+            
+            # Summing
+            print multList, "multlist2"
+            
+            colValues = list(multList.columns.values)
+            colValues.remove(elim)
+            colValues.remove('prob')
+            print colValues
+            sum_bodyoncetoldme = multList.groupby(colValues).sum()
 
+#            print sum_bodyoncetoldme
+#            print ""
+            
+            # Update factorList
+            factorList = [factor for factor in factorList if elim not in list(factor.columns.values)]
+                
+            factorList.append(sum_bodyoncetoldme)
+            
+            print ""
