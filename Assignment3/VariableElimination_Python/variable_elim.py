@@ -35,8 +35,8 @@ class VariableElimination():
         # Identify factors and reduce observed variables -- Sorta done needs flexibility
         # Fix an elimination ordering -- Done
         # For every variable in elim_order:
-            # Multiply factors containing that variable
-            # Sum out the variable to obtain new factor
+            # Multiply factors containing that variable -- Done 
+            # Sum out the variable to obtain new factor -- 
             # Remove the multiplied factors from the list and add the summed out factor
         # Normalize. 
         
@@ -71,22 +71,24 @@ class VariableElimination():
                             factorList.append(prob1.merge(prob2, on=columnvalues, suffixes=('_1', '_2')))
                         else:
                             factorList.append(prob1)
-                            
-        # Remove all unnecessary columns.
-        # First for all factors with just 1 variable.
-        map(lambda factor: (factor.rename(columns = {'prob1': 'newProb'}, inplace = True) if 'prob1' in list(factor.columns.values) else False), factorList)
-        map(lambda factor: (factor.drop('prob', axis = 1, inplace = True) if 'prob' in list(factor.columns.values) else False), factorList)
-        # Then for all factors with multiple variables. 
-        map(lambda factor: (factor.drop(['prob_1', 'prob_2'], axis = 1, inplace = True) if 'prob_1' in list(factor.columns.values) and 'prob_2' in list(factor.columns.values) else False), factorList)
-        #print factorList
         
         # Multiplication
         for table in factorList:
             # Okay so this is in a way kinda sweet because it's only one line, on the other hand it's kind of horrificly unreadable. Anyway, lambda expressions work like lambda x: (True if expression else False). So here it works like: if the table.columns.values contain the columns prob_1 and prob_2, a new row called newProb is added which equals prob_1 * prob_2. Appply function is basically a mapping.
-            table['newProb'] = table.apply(lambda row: (row['prob_1']*row['prob_2'] if 'prob_1' in list(table.columns.values) and 'prob_2' in list(table.columns.values) else False), axis = 1)
+            table['newProb'] = table.apply(lambda row: (row['prob_1']*row['prob_2'] if 'prob_1' in list(table.columns.values) and 'prob_2' in list(table.columns.values) else row['prob']), axis = 1)
             
+        # Remove all unnecessary columns.
+        # First for all factors with just 1 variable.
+#        for factor in factorList: 
+#            if 'prob1' in list(factor.columns.values)
+        map(lambda factor: (factor.rename(columns = {'prob1': 'newProb'}, axis = 1, inplace = True) if 'prob1' in list(factor.columns.values) else False), factorList)
+        map(lambda factor: (factor.drop('prob', axis = 1, inplace = True) if 'prob' in list(factor.columns.values) else False), factorList)
+#        # Then for all factors with multiple variables. 
+        map(lambda factor: (factor.drop(['prob_1', 'prob_2'], axis = 1, inplace = True) if 'prob_1' in list(factor.columns.values) and 'prob_2' in list(factor.columns.values) else False), factorList)
+#        #print factorList
         print factorList
-        #product_formula = sum(self.network.probabilities)
+        
+        
         
         
 
