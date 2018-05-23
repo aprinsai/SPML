@@ -4,7 +4,6 @@
 Implementation of the variable elimination algorithm for AISPAML assignment 3
 
 """
-from itertools import permutations
 import pandas as pd
 
 class VariableElimination():
@@ -63,13 +62,10 @@ class VariableElimination():
         
 #        print factorList
         for elim in elim_order:
-            print factorList
             multList = []
             for probDist in factorList:
-                print probDist.loc['prob']
                 if elim in list(probDist.columns.values):
                     multList.append(probDist)
-            print multList, "multlist1"
             multList = reduce(lambda x,y: x.merge(y, on = elim, suffixes=('_1', '_2')), multList)
             
             
@@ -85,24 +81,14 @@ class VariableElimination():
             
             multList.rename({'newProb':'prob'}, axis = 1, inplace = True)
             
-#            print multList
-#            print ""
-            
             # Summing
-            print multList, "multlist2"
-            
             colValues = list(multList.columns.values)
             colValues.remove(elim)
             colValues.remove('prob')
-            print colValues
-            sum_bodyoncetoldme = multList.groupby(colValues).sum()
-
-#            print sum_bodyoncetoldme
-#            print ""
+            sum_bodyoncetoldme = pd.DataFrame(multList.groupby(colValues).sum().reset_index())
             
             # Update factorList
             factorList = [factor for factor in factorList if elim not in list(factor.columns.values)]
-                
             factorList.append(sum_bodyoncetoldme)
             
-            print ""
+            print "Factors: \n",factorList,"\n"
