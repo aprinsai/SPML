@@ -49,21 +49,19 @@ class VariableElimination():
         for keyO, valueO in observed.items():
             for keyP, prob in probabilities.items():
                 if keyO in list(prob.columns.values):
-                    # Now it's hardcoded as Earthquake.
-                    # How to index df by variable name?
                     newProb = prob[prob.get(keyO) == valueO]
                     probabilities[keyP] = newProb
         
         #print probabilities
         # Prepare a list of all the factors containing certain variables.
-        factorList = []
+        productList = []
         for key, prob in probabilities.items():
-            factorList.append(prob)
+            productList.append(prob)
         
-#        print factorList
+#        print productList
         for elim in elim_order:
             multList = []
-            for probDist in factorList:
+            for probDist in productList:
                 if elim in list(probDist.columns.values):
                     multList.append(probDist)
             multList = reduce(lambda x,y: x.merge(y, on = elim, suffixes=('_1', '_2')), multList)
@@ -87,9 +85,9 @@ class VariableElimination():
             colValues.remove('prob')
             sum_bodyoncetoldme = pd.DataFrame(multList.groupby(colValues).sum().reset_index())
             
-            # Update factorList
-            factorList = [factor for factor in factorList if elim not in list(factor.columns.values)]
-            factorList.append(sum_bodyoncetoldme)
+            # Update productList
+            productList = [factor for factor in productList if elim not in list(factor.columns.values)]
+            productList.append(sum_bodyoncetoldme)
             
-            print "Factors: \n",factorList,"\n"
+            print "Factors: \n",productList,"\n"
         
