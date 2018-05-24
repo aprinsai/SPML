@@ -92,3 +92,4 @@ class VariableElimination():
             factorList.append(sum_bodyoncetoldme)
             
             print "Factors: \n",factorList,"\n"
+        
