@@ -33,30 +33,28 @@ if __name__ == '__main__':
     
     # the class BayesNet represents a Bayesian network from a .bif file
     # in several variables
-    net = BayesNet('earthquake.bif') 
+    net = BayesNet('asia.bif')
     
     # these are the variables that should be used for variable elimination
-
-#    print 'values', net.values 
-#    print 'probabilities', net.probabilities
-#    print 'parents', net.parents
-#    print 'nodes', net.nodes
+    
+    print 'values', net.values 
+    print 'probabilities', net.probabilities
+    print 'parents', net.parents
+    print 'nodes', net.nodes
     
     # Create object
     ve = VariableElimination(net)
     
     # Observed variables
-    observed = {'Earthquake': 'True'}
+    observed = {}
     
     # Query
-    query = 'Alarm'
+    query = 'bronc'
     
     # Elimination order
     elim_order = sort(net.nodes, net.parents, query)
-    #print elim_order
-    print ""
     
-    ve.run('Alarm', observed, elim_order)
+    ve.run(query, observed, elim_order)
     
      # What are the query /observed variables?
      # Write 

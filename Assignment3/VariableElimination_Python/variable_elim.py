@@ -39,7 +39,6 @@ class VariableElimination():
             # Remove the multiplied factors from the list and add the summed out factor
         # Normalize. 
         
-        
         # Dictionary is the reduced formula of factors. 
         # Reducing oberved variable = eliminate all values with incorrect observed value.
         
@@ -52,7 +51,6 @@ class VariableElimination():
                     newProb = prob[prob.get(keyO) == valueO]
                     probabilities[keyP] = newProb
         
-        #print probabilities
         # Prepare a list of all the factors containing certain variables.
         productList = []
         for key, prob in probabilities.items():
@@ -64,11 +62,14 @@ class VariableElimination():
             for probDist in productList:
                 if elim in list(probDist.columns.values):
                     multList.append(probDist)
-            multList = reduce(lambda x,y: x.merge(y, on = elim, suffixes=('_1', '_2')), multList)
+
+            multList = reduce(lambda x,y: x.merge(y, on = list(set(x.columns.values).intersection(y.columns.values)), suffixes=('_1', '_2')), multList)
             
+            print multList
             
             # Multiply
             multList['newProb'] = multList.apply(lambda row: (row['prob_1']*row['prob_2'] if 'prob_1' in list(multList.columns.values) and 'prob_2' in list(multList.columns.values) else row['prob']), axis = 1)
+            self.multiplication_steps += 1
             
             # Clean up
             if 'prob' in list(multList.columns.values):
@@ -84,10 +85,47 @@ class VariableElimination():
             colValues.remove(elim)
             colValues.remove('prob')
             sum_bodyoncetoldme = pd.DataFrame(multList.groupby(colValues).sum().reset_index())
+            self.addition_steps += 1
             
             # Update productList
             productList = [factor for factor in productList if elim not in list(factor.columns.values)]
             productList.append(sum_bodyoncetoldme)
             
-            print "Factors: \n",productList,"\n"
         
+        print productList
+        # Last multiplication of the query variable. 
+        productList = reduce(lambda x,y: x.merge(y, on = query, suffixes = ['_1','_2']), productList)
+        
+        print productList
+        
+        probFalse = 1.0
+        for col in productList.iloc[0]:
+            if isinstance(col, float):
+                probFalse = probFalse * col
+        probTrue = 1.0
+        for col in productList.iloc[1]:
+            probTrue = 1.0
+            if isinstance(col, float):
+                probTrue = probTrue * col
+        productList.loc[1,'finalProb'] = probTrue
+        productList.loc[0,'finalProb'] = probFalse
+        self.multiplication_steps += 1
+        
+        # Clean up
+        if 'prob' in list(productList.columns.values):
+            productList.drop('prob', axis = 1, inplace = True)
+        if 'prob_1' in list(productList.columns.values) and 'prob_2' in list(productList.columns.values):
+            productList.drop('prob_1', axis = 1, inplace = True)
+            productList.drop('prob_2', axis = 1, inplace = True)
+        
+        # Normalize
+        normalizing = productList['finalProb'].sum()
+        
+        for index, row in productList.iterrows():
+            productList.loc[index,'finalProb'] = row['finalProb']/normalizing
+        
+        print productList
+        
+        productList = pd.DataFrame(productList.groupby(query).sum().reset_index())
+        
+        print "Final: {}\n\n  Additions: {}\n  Multiplications: {}".format(productList, self.addition_steps, self.multiplication_steps)
