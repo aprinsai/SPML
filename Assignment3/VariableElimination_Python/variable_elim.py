@@ -61,11 +61,10 @@ class VariableElimination():
             multList = []
             for probDist in productList:
                 if elim in list(probDist.columns.values):
+                    #print elim, probDist
                     multList.append(probDist)
-
-            multList = reduce(lambda x,y: x.merge(y, on = list(set(x.columns.values).intersection(y.columns.values)), suffixes=('_1', '_2')), multList)
             
-            print multList
+            multList = reduce(lambda x,y: x.merge(y, on = elim, suffixes=('_1', '_2')), multList)
             
             # Multiply
             multList['newProb'] = multList.apply(lambda row: (row['prob_1']*row['prob_2'] if 'prob_1' in list(multList.columns.values) and 'prob_2' in list(multList.columns.values) else row['prob']), axis = 1)
@@ -92,11 +91,13 @@ class VariableElimination():
             productList.append(sum_bodyoncetoldme)
             
         
-        print productList
+        #print productList
         # Last multiplication of the query variable. 
+        print productList
+        
         productList = reduce(lambda x,y: x.merge(y, on = query, suffixes = ['_1','_2']), productList)
         
-        print productList
+        #print productList
         
         probFalse = 1.0
         for col in productList.iloc[0]:
@@ -104,7 +105,6 @@ class VariableElimination():
                 probFalse = probFalse * col
         probTrue = 1.0
         for col in productList.iloc[1]:
-            probTrue = 1.0
             if isinstance(col, float):
                 probTrue = probTrue * col
         productList.loc[1,'finalProb'] = probTrue
@@ -124,7 +124,7 @@ class VariableElimination():
         for index, row in productList.iterrows():
             productList.loc[index,'finalProb'] = row['finalProb']/normalizing
         
-        print productList
+        #print productList
         
         productList = pd.DataFrame(productList.groupby(query).sum().reset_index())
         

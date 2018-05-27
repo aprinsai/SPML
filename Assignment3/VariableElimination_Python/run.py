@@ -33,14 +33,14 @@ if __name__ == '__main__':
     
     # the class BayesNet represents a Bayesian network from a .bif file
     # in several variables
-    net = BayesNet('asia.bif')
+    net = BayesNet('cancer.bif')
     
     # these are the variables that should be used for variable elimination
     
     print 'values', net.values 
     print 'probabilities', net.probabilities
-    print 'parents', net.parents
-    print 'nodes', net.nodes
+#    print 'parents', net.parents
+#    print 'nodes', net.nodes
     
     # Create object
     ve = VariableElimination(net)
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     observed = {}
     
     # Query
-    query = 'bronc'
+    query = 'Cancer'
     
     # Elimination order
     elim_order = sort(net.nodes, net.parents, query)
