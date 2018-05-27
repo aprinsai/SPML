@@ -31,16 +31,8 @@ if __name__ == '__main__':
             sortedList.remove(query)
         return sortedList
     
-    # the class BayesNet represents a Bayesian network from a .bif file
-    # in several variables
+    # the class BayesNet represents a Bayesian network from a .bif file in several variables
     net = BayesNet('cancer.bif')
-    
-    # these are the variables that should be used for variable elimination
-    
-    print 'values', net.values 
-    print 'probabilities', net.probabilities
-#    print 'parents', net.parents
-#    print 'nodes', net.nodes
     
     # Create object
     ve = VariableElimination(net)
@@ -55,29 +47,3 @@ if __name__ == '__main__':
     elim_order = sort(net.nodes, net.parents, query)
     
     ve.run(query, observed, elim_order)
-    
-     # What are the query /observed variables?
-     # Write 
-    
-    # Make your variable elimination code in a seperate file: 'variable_elim'. 
-    # you can call this file as follows:
-    #ve = VariableElimination(net)
-    
-    # If variables are known beforehand, you can represent them in the following way: 
-    # evidence = {'Burglary': 'True'}
-
-    # determine your heuristics before you call the run function. This can be done in this file or in a seperate file
-
-    # If variables are known beforehand, you can represent them in the following way: 
-    # evidence = {'Burglary': 'True'}
-
-    # determine you heuristics before you call the run function. This can be done in this file or in a seperate file
-
-    # The heuristics either specifying the elimination ordering (list) or it is a function that determines the elimination ordering
-    # given the network. An simple example is: 
-    # elim_order = net.nodes
-
-	#call the elimination ordering function for example as follows:   
-    #ve.run('Alarm', evidence, elim_order)
-
- 

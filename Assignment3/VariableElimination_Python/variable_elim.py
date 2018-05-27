@@ -56,12 +56,10 @@ class VariableElimination():
         for key, prob in probabilities.items():
             productList.append(prob)
         
-#        print productList
         for elim in elim_order:
             multList = []
             for probDist in productList:
                 if elim in list(probDist.columns.values):
-                    #print elim, probDist
                     multList.append(probDist)
             
             multList = reduce(lambda x,y: x.merge(y, on = elim, suffixes=('_1', '_2')), multList)
@@ -89,15 +87,9 @@ class VariableElimination():
             # Update productList
             productList = [factor for factor in productList if elim not in list(factor.columns.values)]
             productList.append(sum_bodyoncetoldme)
-            
         
-        #print productList
         # Last multiplication of the query variable. 
-        print productList
-        
         productList = reduce(lambda x,y: x.merge(y, on = query, suffixes = ['_1','_2']), productList)
-        
-        #print productList
         
         probFalse = 1.0
         for col in productList.iloc[0]:
