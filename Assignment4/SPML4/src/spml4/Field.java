@@ -1,4 +1,4 @@
-package nl.ru.ai.vroon.mdp;
+package spml4;
 
 /**
  * Enumerates the kinds of fields we can come across

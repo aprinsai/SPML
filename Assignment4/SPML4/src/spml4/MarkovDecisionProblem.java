@@ -1,4 +1,4 @@
-package nl.ru.ai.vroon.mdp;
+package spml4;
 import java.util.Random;
 
 import javax.swing.JFrame;

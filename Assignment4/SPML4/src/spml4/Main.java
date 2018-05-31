@@ -1,4 +1,4 @@
-package nl.ru.ai.vroon.mdp;
+package spml4;
 
 /**
  * This main is for testing purposes (and to show you how to use the MDP class).

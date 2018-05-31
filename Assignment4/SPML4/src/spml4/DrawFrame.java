@@ -1,4 +1,4 @@
-package nl.ru.ai.vroon.mdp;
+package spml4;
 
 import java.awt.Container;
 import javax.swing.JFrame;
