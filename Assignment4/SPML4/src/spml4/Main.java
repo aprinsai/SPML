@@ -32,7 +32,7 @@ public class Main {
             mdp2.performAction(Action.LEFT);
         }
     }
-    
+
     /*
     
     Initialize:
@@ -40,13 +40,26 @@ public class Main {
     
     Q: what is k and what is S?
     
-    */
-    
+     */
     private double[][] ValueIterations(MarkovDecisionProblem mdp) {
         double[][] valueFunction = new double[mdp.getWidth()][mdp.getHeight()];
-        
-        
+        intialize(valueFunction);
+
         return null;
     }
-    
+
+    private void intialize(double[][] valueFunction) {
+        for (double[] valueFunction1 : valueFunction)
+            for (double value : valueFunction1)
+                value = 0;
+    }
+
+    private void printArray(double[][] valueFunction) {
+        for (double[] valueFunction1 : valueFunction) {
+            for (double value : valueFunction1)
+                System.out.print(value + " ");
+            System.out.println("");
+        }
+    }
+
 }
