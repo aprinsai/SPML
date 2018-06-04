@@ -43,9 +43,10 @@ public class ValueIterator {
             // For each state
             for(int row = 0; row < valueFunction.length; row++) {
                 for(int col = 0; col < valueFunction[row].length; col++) {
+                    double[] score = new double[4]; // One for each movement.
                     //For each action in each state
-                    for(Action a: Action.values()) {
-                        
+                    for(int i = 0; i < Action.values().length; i++) {
+                        score[i] = 0.0;
                     }
                 }
             }
@@ -60,7 +61,7 @@ public class ValueIterator {
      * @param action performed in that state
      * @return the probability of performing action in state(x,y)
      */
-    private double transition(int x, int y, Action action) {
+    private double getTransitionProb(int fromX, int fromY, int toX, int toY, Action action) {
         
         return 0.0;
     }

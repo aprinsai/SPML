@@ -17,7 +17,7 @@ public class Main {
         
         MarkovDecisionProblem mdp = new MarkovDecisionProblem();
         
-        ValueIterator vi = new ValueIterator(mdp, 0.0);
+        ValueIterator vi = new ValueIterator(mdp, 0.0, 0.8);
         vi.printArray();
         
         
