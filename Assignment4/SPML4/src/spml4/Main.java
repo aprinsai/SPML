@@ -12,7 +12,15 @@ public class Main {
      * @param args, not used
      */
     public static void main(String[] args) {
+        
+        
+        
         MarkovDecisionProblem mdp = new MarkovDecisionProblem();
+        
+        ValueIterator vi = new ValueIterator(mdp, 0.0);
+        vi.printArray();
+        
+        
         mdp.setInitialState(0, 0);
         for (int i = 0; i < 15; i++) {
             mdp.performAction(Action.UP);
@@ -33,33 +41,6 @@ public class Main {
         }
     }
 
-    /*
     
-    Initialize:
-    valueFunction is double array (same dim as mdp) with all 0
-    
-    Q: what is k and what is S?
-    
-     */
-    private double[][] ValueIterations(MarkovDecisionProblem mdp) {
-        double[][] valueFunction = new double[mdp.getWidth()][mdp.getHeight()];
-        intialize(valueFunction);
-
-        return null;
-    }
-
-    private void intialize(double[][] valueFunction) {
-        for (double[] valueFunction1 : valueFunction)
-            for (double value : valueFunction1)
-                value = 0;
-    }
-
-    private void printArray(double[][] valueFunction) {
-        for (double[] valueFunction1 : valueFunction) {
-            for (double value : valueFunction1)
-                System.out.print(value + " ");
-            System.out.println("");
-        }
-    }
 
 }
