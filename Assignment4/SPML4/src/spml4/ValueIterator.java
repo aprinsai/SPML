@@ -8,23 +8,27 @@ public class ValueIterator {
 
     private MarkovDecisionProblem mdp;
     private double[][] valueFunction;
+    private double[][] previousValueFunction;
     private final double threshold;
     private final double discount;
     
     public ValueIterator(MarkovDecisionProblem mdp, double threshold, double discount) {
         this.mdp = mdp;
-        this.valueFunction = intialize();
+        intialize();
         this.threshold = threshold;
         this.discount = discount;
     }
 
-    private double[][] intialize() {
+    private void intialize() {
         valueFunction = new double[mdp.getHeight()][mdp.getWidth()];
-
+        previousValueFunction = new double[mdp.getHeight()][mdp.getWidth()]  ;
         for (double[] valueFunctionRow : valueFunction)
-            for (double value : valueFunctionRow)
+            for (double value : valueFunctionRow) 
                 value = 0;
-        return valueFunction;
+        //Misschien copy functie? System.arraycopy();
+        for (double[] prevValueFunctionRow : previousValueFunction)
+            for (double value : prevValueFunctionRow) 
+                value = 0;
     }
     
     /*
@@ -38,16 +42,18 @@ public class ValueIterator {
 
     
     public void run() {
-
+        
         while(statement()) {
             // For each state
             for(int row = 0; row < valueFunction.length; row++) {
                 for(int col = 0; col < valueFunction[row].length; col++) {
-                    double[] score = new double[4]; // One for each movement.
+                    double[] scores = new double[Action.values().length]; // One for each movement.
                     //For each action in each state
                     for(int i = 0; i < Action.values().length; i++) {
-                        score[i] = 0.0;
+                        scores[i] = 0.0;
                     }
+                    valueFunction[row][col] = mdp.getReward() + getMax(scores);
+                    // utility = mdp.getReward() + Collections.max(scores)
                 }
             }
             // Update score
@@ -82,7 +88,35 @@ public class ValueIterator {
         return valueFunction;
     }
 
+    
+    /**
+     * @return true if there exists a state where 
+     * the difference between the current state and the previous state
+     * is bigger than the threshold.
+     */
     private boolean statement() {
+        for(int row = 0; row<valueFunction.length;row++) {
+            for(int col = 0; col<valueFunction[row].length; col++) {
+                double value = valueFunction[row][col];
+                double prevValue = previousValueFunction[row][col];
+                // Vooruit kijken (k+1) of achteruit kijken???
+                // Iets doen met de terminator state, want value = prevValue aka 0. 
+                if (value - prevValue > threshold)
+                    return true;
+            }
+        }
         return true;
+    }
+
+    /**
+     * @param scores array of doubles
+     * @return the maximum value in the scores array. 
+     */
+    private double getMax(double[] scores) {
+        Double max = null;
+        for(double score : scores) 
+            if(score > max)
+                max = score;
+        return max;
     }
 }
