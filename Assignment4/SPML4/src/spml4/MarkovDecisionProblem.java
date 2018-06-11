@@ -15,6 +15,7 @@ import javax.swing.JFrame;
  *
  */
 public class MarkovDecisionProblem {
+
     /////////////////////////////////////////////////////////
     /// FIELDS
     /////////////////////////////////////////////////////////
@@ -154,13 +155,13 @@ public class MarkovDecisionProblem {
             doAction(action);
         else {
             double prob = rand.nextDouble();
-            if (prob < pPerform)
+            if (prob < getpPerform())
                 doAction(action);
-            else if (prob < pPerform + pSidestep / 2)
+            else if (prob < getpPerform() + getpSidestep() / 2)
                 doAction(Action.previousAction(action));
-            else if (prob < pPerform + pSidestep)
+            else if (prob < getpPerform() + getpSidestep())
                 doAction(Action.nextAction(action));
-            else if (prob < pPerform + pSidestep + pBackstep)
+            else if (prob < getpPerform() + getpSidestep() + getpBackstep())
                 doAction(Action.backAction(action));
             // else: do nothing (i.e. stay where you are)
         }
@@ -448,7 +449,23 @@ public class MarkovDecisionProblem {
             return Field.OUTOFBOUNDS;
         }
     }
+    
+    public double getpPerform() {
+        return pPerform;
+    }
 
+    public double getpSidestep() {
+        return pSidestep;
+    }
+
+    public double getpBackstep() {
+        return pBackstep;
+    }
+
+    public double getpNoStep() {
+        return pNoStep;
+    }
+    
     /////////////////////////////////////////////////////////
     /// DISPLAY STUFF
     /////////////////////////////////////////////////////////
