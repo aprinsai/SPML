@@ -261,6 +261,34 @@ public class MarkovDecisionProblem {
         System.err.println("ERROR: MDP: getReward(): agent is not in an empty, reward or negreward field...");
         return 0;
     }
+    
+    /**
+     * Returns the reward the field in which the agent currently is yields
+     *
+     * @param xPosition of the state you want to evaluate
+     * @param yPosition of the state you want to evaluate
+     * @return a double (can be negative)
+     */
+    public double getReward(int xPosition, int yPosition) {
+        // If we are terminated, no rewards can be gained anymore (i.e. every action is futile):
+        if (terminated)
+            return 0;
+
+        switch (landscape[xPosition][yPosition]) {
+            case EMPTY:
+                return noReward;
+            case REWARD:
+                terminated = true;
+                return posReward;
+            case NEGREWARD:
+                terminated = true;
+                return negReward;
+        }
+
+        // If something went wrong:
+        System.err.println("ERROR: MDP: getReward(): agent is not in an empty, reward or negreward field...");
+        return 0;
+    }
 
     /////////////////////////////////////////////////////////
     /// SETTERS

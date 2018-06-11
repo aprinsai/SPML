@@ -3,12 +3,13 @@ package spml4;
 /**
  *
  * @author Pleun
+ * @author noukie
  */
 public class ValueIterator {
 
     private MarkovDecisionProblem mdp;
-    private double[][] valueFunction;
-    private double[][] previousValueFunction;
+    private Quple[][] valueFunction;
+    private Quple[][] nextValueFunction;
     private final double threshold;
     private final double discount;
 
@@ -20,12 +21,12 @@ public class ValueIterator {
     }
 
     private void intialize() {
-        valueFunction = new double[mdp.getHeight()][mdp.getWidth()];
-        previousValueFunction = new double[mdp.getHeight()][mdp.getWidth()];
+        valueFunction = new Quple[mdp.getHeight()][mdp.getWidth()];
+        nextValueFunction = new Quple[mdp.getHeight()][mdp.getWidth()];
         for (int row = 0; row < mdp.getHeight(); row++)
             for (int col = 0; col < mdp.getWidth(); col++) {
-                valueFunction[row][col] = 0;
-                previousValueFunction[row][col] = 0;
+                valueFunction[row][col] = new Quple(0.0, null);
+                nextValueFunction[row][col] = new Quple(0.0, null);
             }
 
     }
@@ -38,19 +39,25 @@ public class ValueIterator {
     Q: what is k and what is S?
     
      */
-    public void run() {
+    public Action[][] run() {
 
-        while (statement())
+        /*
+        All x/y's and row/col's are fucked up :( CHECK THATTTT!!!!!!
+        */
+        while (statement()) {
+            updateV();
+            printArray();
             // For each state
             for (int row = 0; row < valueFunction.length; row++)
                 for (int col = 0; col < valueFunction[row].length; col++) {
-                    double[] scores = new double[Action.values().length]; // One for each movement.
+                    Quple[] Q = new Quple[Action.values().length]; // One for each movement.
                     //For each action in each state
                     for (int i = 0; i < Action.values().length; i++)
-                        scores[i] = 0.0;
-                    valueFunction[row][col] = mdp.getReward() + getMax(scores);
-                    // utility = mdp.getReward() + Collections.max(scores)
-                } // Update score
+                        Q[i] = calculateQ(Action.values()[i], row, col);
+                    nextValueFunction[row][col] = getMax(Q);
+                }
+        }
+        return getPolicy();
     }
 
     /**
@@ -66,17 +73,47 @@ public class ValueIterator {
         if (Math.abs(fromX - toX) > 1 || Math.abs(fromY - toY) > 1 || (Math.abs(fromX - toX) == 1 && Math.abs(fromY - toY) == 1))
             throw new IllegalArgumentException("Invalid from/to position.");
         //For moving up. Can't really be done pretty with switch can it?
-        if (action == Action.UP) {
-            if (fromX == toX && fromY == toY)
-                return mdp.getpNoStep();
-            if (toY < fromY) // Going up 
-                return mdp.getpPerform();
-            if (fromY < toY) // Going down
-                return mdp.getpBackstep();
-            if (toX < fromX) // Going left
-                return mdp.getpSidestep()/2;
-            if (fromX < toX) // Going right
-                return mdp.getpSidestep()/2;
+        switch (action) {
+            case UP:
+                if (fromX == toX && fromY == toY) // Staying
+                    return mdp.getpNoStep();
+                if (toY > fromY) // Going up 
+                    return mdp.getpPerform();
+                if (fromY > toY) // Going down
+                    return mdp.getpBackstep();
+                if (toX < fromX || fromX < toX) // Going left or right
+                    return mdp.getpSidestep() / 2;
+                break;
+            case DOWN:
+                if (fromX == toX && fromY == toY) // Staying
+                    return mdp.getpNoStep();
+                if (toY < fromY) // Going down 
+                    return mdp.getpPerform();
+                if (fromY < toY) // Going down
+                    return mdp.getpBackstep();
+                if (toX > fromX || fromX > toX) // Going left or right
+                    return mdp.getpSidestep() / 2;
+                break;
+            case LEFT:
+                if (fromX == toX && fromY == toY) // Staying
+                    return mdp.getpNoStep();
+                if (toX < fromX) // Going left 
+                    return mdp.getpPerform();
+                if (fromX < toX) // Going right
+                    return mdp.getpBackstep();
+                if (toY > fromY || fromY > toY) // Going up or down
+                    return mdp.getpSidestep() / 2;
+                break;
+            case RIGHT:
+                if (fromX == toX && fromY == toY) // Staying
+                    return mdp.getpNoStep();
+                if (toX < fromX) // Going right 
+                    return mdp.getpPerform();
+                if (fromX < toX) // Going left
+                    return mdp.getpBackstep();
+                if (toY > fromY || fromY > toY) // Going up or down
+                    return mdp.getpSidestep() / 2;
+                break;
         }
         return 0.0;
     }
@@ -85,14 +122,15 @@ public class ValueIterator {
      * Think this can be public?
      */
     public void printArray() {
-        for (double[] valueFunction1 : valueFunction) {
-            for (double value : valueFunction1)
-                System.out.print(value + ", ");
+        for (Quple[] valueFunction1 : valueFunction) {
+            for (Quple value : valueFunction1)
+                System.out.print(value.getValue() + ", ");
             System.out.println("");
         }
+        System.out.println("");
     }
 
-    public double[][] getValueIterations() {
+    public Quple[][] getValueIterations() {
         return valueFunction;
     }
 
@@ -103,25 +141,64 @@ public class ValueIterator {
     private boolean statement() {
         for (int row = 0; row < valueFunction.length; row++)
             for (int col = 0; col < valueFunction[row].length; col++) {
-                double value = valueFunction[row][col];
-                double prevValue = previousValueFunction[row][col];
-                // Vooruit kijken (k+1) of achteruit kijken??? -- Think about this later.
-                // Iets doen met de terminator state, want value = prevValue aka 0. -- Check if done correct?
-                if (value - prevValue > threshold && mdp.getField(row, col) != Field.REWARD)
+                double value = valueFunction[row][col].getValue();
+                double nextValue = nextValueFunction[row][col].getValue();
+                // Vooruit kijken (k+1) of achteruit kijken??? -- .
+                if (nextValue - value > threshold && mdp.getField(row, col) != Field.REWARD)
                     return true;
             }
         return true;
     }
 
     /**
-     * @param scores array of doubles
+     * @param Quples array of doubles
      * @return the maximum value in the scores array.
      */
-    private double getMax(double[] scores) {
-        Double max = null;
-        for (double score : scores)
-            if (score > max)
-                max = score;
+    private Quple getMax(Quple[] Quples) {
+        Quple max = null;
+        for (Quple Q : Quples)
+            if (max == null || Q.getValue() > max.getValue())
+                max = Q;
         return max;
+    }
+
+    /**
+     *
+     * @param action
+     * @param y
+     * @param x
+     * @return the Qvalue
+     */
+    private Quple calculateQ(Action action, int y, int x) {
+        double upProb = 0.0;
+        if (y < (mdp.getHeight() - 1) && mdp.getField(x, y + 1) != Field.OBSTACLE)
+            upProb = getTransitionProb(x, y, x, y + 1, action) * (mdp.getReward(x, y + 1) + discount * valueFunction[y + 1][x].getValue());
+        double downProb = 0.0;
+        if (y > 0 && mdp.getField(x, y - 1) != Field.OBSTACLE)
+            downProb = getTransitionProb(x, y, x, y - 1, action) * (mdp.getReward(x, y - 1) + discount * valueFunction[y - 1][x].getValue());
+        double leftProb = 0.0;
+        if (x > 0 && mdp.getField(x - 1, y) != Field.OBSTACLE)
+            leftProb = getTransitionProb(x, y, x - 1, y, action) * (mdp.getReward(x - 1, y) + discount * valueFunction[y][x - 1].getValue());
+        double rightProb = 0.0;
+        if (x < (mdp.getWidth() - 1) && mdp.getField(x + 1, y) != Field.OBSTACLE)
+            rightProb = getTransitionProb(x, y, x + 1, y, action) * (mdp.getReward(x + 1, y) + discount * valueFunction[y][x + 1].getValue());
+        return new Quple(upProb + downProb + leftProb + rightProb, action);
+    }
+
+    /**
+     * Updates the valueFunction to the nextValueFunction.
+     */
+    private void updateV() {
+        for (int row = 0; row < valueFunction.length; row++)
+            for (int col = 0; col < valueFunction.length; col++)
+                valueFunction[row][col] = nextValueFunction[row][col];
+    }
+
+    private Action[][] getPolicy() {
+        Action[][] policy = new Action[mdp.getHeight()][mdp.getWidth()];
+        for (int row = 0; row < valueFunction.length; row++)
+            for (int col = 0; col < valueFunction.length; col++)
+                policy[row][col] = valueFunction[row][col].getAction();
+        return policy;
     }
 }
