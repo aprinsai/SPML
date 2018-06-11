@@ -21,12 +21,12 @@ public class ValueIterator {
     }
 
     private void intialize() {
-        valueFunction = new Quple[mdp.getHeight()][mdp.getWidth()];
-        nextValueFunction = new Quple[mdp.getHeight()][mdp.getWidth()];
-        for (int row = 0; row < mdp.getHeight(); row++)
-            for (int col = 0; col < mdp.getWidth(); col++) {
-                valueFunction[row][col] = new Quple(0.0, null);
-                nextValueFunction[row][col] = new Quple(0.0, null);
+        valueFunction = new Quple[mdp.getWidth()][mdp.getHeight()];
+        nextValueFunction = new Quple[mdp.getWidth()][mdp.getHeight()];
+        for (int x = 0; x < mdp.getWidth(); x++)
+            for (int y = 0; y < mdp.getHeight(); y++) {
+                valueFunction[x][y] = new Quple(0.0, null);
+                nextValueFunction[x][y] = new Quple(0.0, null);
             }
 
     }
@@ -43,18 +43,20 @@ public class ValueIterator {
 
         /*
         All x/y's and row/col's are fucked up :( CHECK THATTTT!!!!!!
+        
+        Copy-paste de performAction functies en 
         */
         while (statement()) {
             updateV();
-            printArray();
+            //printArray();
             // For each state
-            for (int row = 0; row < valueFunction.length; row++)
-                for (int col = 0; col < valueFunction[row].length; col++) {
+            for (int x = 0; x < mdp.getWidth(); x++)
+                for (int y = 0; y < mdp.getHeight(); y++) {
                     Quple[] Q = new Quple[Action.values().length]; // One for each movement.
                     //For each action in each state
                     for (int i = 0; i < Action.values().length; i++)
-                        Q[i] = calculateQ(Action.values()[i], row, col);
-                    nextValueFunction[row][col] = getMax(Q);
+                        Q[i] = calculateQ(Action.values()[i], x, y);
+                    nextValueFunction[x][y] = getMax(Q);
                 }
         }
         return getPolicy();
@@ -139,12 +141,13 @@ public class ValueIterator {
      * current state and the previous state is bigger than the threshold.
      */
     private boolean statement() {
-        for (int row = 0; row < valueFunction.length; row++)
-            for (int col = 0; col < valueFunction[row].length; col++) {
-                double value = valueFunction[row][col].getValue();
-                double nextValue = nextValueFunction[row][col].getValue();
+        for (int x = 0; x < mdp.getWidth(); x++)
+            for (int y = 0; y < mdp.getHeight(); y++) {
+                double value = valueFunction[x][y].getValue();
+                double nextValue = nextValueFunction[x][y].getValue();
                 // Vooruit kijken (k+1) of achteruit kijken??? -- .
-                if (nextValue - value > threshold && mdp.getField(row, col) != Field.REWARD)
+                System.out.println(Math.abs(nextValue-value));
+                if (Math.abs(nextValue - value) > threshold && mdp.getField(x, y) != Field.REWARD)
                     return true;
             }
         return true;
@@ -169,19 +172,19 @@ public class ValueIterator {
      * @param x
      * @return the Qvalue
      */
-    private Quple calculateQ(Action action, int y, int x) {
+    private Quple calculateQ(Action action, int x, int y) {
         double upProb = 0.0;
         if (y < (mdp.getHeight() - 1) && mdp.getField(x, y + 1) != Field.OBSTACLE)
-            upProb = getTransitionProb(x, y, x, y + 1, action) * (mdp.getReward(x, y + 1) + discount * valueFunction[y + 1][x].getValue());
+            upProb = getTransitionProb(x, y, x, y + 1, action) * (mdp.getReward(x, y + 1) + discount * valueFunction[x][y + 1].getValue());
         double downProb = 0.0;
         if (y > 0 && mdp.getField(x, y - 1) != Field.OBSTACLE)
-            downProb = getTransitionProb(x, y, x, y - 1, action) * (mdp.getReward(x, y - 1) + discount * valueFunction[y - 1][x].getValue());
+            downProb = getTransitionProb(x, y, x, y - 1, action) * (mdp.getReward(x, y - 1) + discount * valueFunction[x][y - 1].getValue());
         double leftProb = 0.0;
         if (x > 0 && mdp.getField(x - 1, y) != Field.OBSTACLE)
-            leftProb = getTransitionProb(x, y, x - 1, y, action) * (mdp.getReward(x - 1, y) + discount * valueFunction[y][x - 1].getValue());
+            leftProb = getTransitionProb(x, y, x - 1, y, action) * (mdp.getReward(x - 1, y) + discount * valueFunction[x - 1][y].getValue());
         double rightProb = 0.0;
         if (x < (mdp.getWidth() - 1) && mdp.getField(x + 1, y) != Field.OBSTACLE)
-            rightProb = getTransitionProb(x, y, x + 1, y, action) * (mdp.getReward(x + 1, y) + discount * valueFunction[y][x + 1].getValue());
+            rightProb = getTransitionProb(x, y, x + 1, y, action) * (mdp.getReward(x + 1, y) + discount * valueFunction[x + 1][y].getValue());
         return new Quple(upProb + downProb + leftProb + rightProb, action);
     }
 
@@ -189,16 +192,16 @@ public class ValueIterator {
      * Updates the valueFunction to the nextValueFunction.
      */
     private void updateV() {
-        for (int row = 0; row < valueFunction.length; row++)
-            for (int col = 0; col < valueFunction.length; col++)
-                valueFunction[row][col] = nextValueFunction[row][col];
+        for (int x = 0; x < mdp.getWidth(); x++)
+            for (int y = 0; y < mdp.getHeight(); y++)
+                valueFunction[x][y] = nextValueFunction[x][y];
     }
 
     private Action[][] getPolicy() {
-        Action[][] policy = new Action[mdp.getHeight()][mdp.getWidth()];
-        for (int row = 0; row < valueFunction.length; row++)
-            for (int col = 0; col < valueFunction.length; col++)
-                policy[row][col] = valueFunction[row][col].getAction();
+        Action[][] policy = new Action[mdp.getWidth()][mdp.getHeight()];
+        for (int x = 0; x < mdp.getWidth(); x++)
+            for (int y = 0; y < mdp.getHeight(); y++)
+                policy[x][y] = valueFunction[x][y].getAction();
         return policy;
     }
 }
