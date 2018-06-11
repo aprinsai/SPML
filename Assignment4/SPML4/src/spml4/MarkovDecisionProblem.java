@@ -19,7 +19,6 @@ public class MarkovDecisionProblem {
     /////////////////////////////////////////////////////////
     /// FIELDS
     /////////////////////////////////////////////////////////
-
     // The collection of grid positions that can be visited:
     private Field[][] landscape;
     private int width,
@@ -261,7 +260,7 @@ public class MarkovDecisionProblem {
         System.err.println("ERROR: MDP: getReward(): agent is not in an empty, reward or negreward field...");
         return 0;
     }
-    
+
     /**
      * Returns the reward the field in which the agent currently is yields
      *
@@ -477,7 +476,7 @@ public class MarkovDecisionProblem {
             return Field.OUTOFBOUNDS;
         }
     }
-    
+
     public double getpPerform() {
         return pPerform;
     }
@@ -493,7 +492,7 @@ public class MarkovDecisionProblem {
     public double getpNoStep() {
         return pNoStep;
     }
-    
+
     /////////////////////////////////////////////////////////
     /// DISPLAY STUFF
     /////////////////////////////////////////////////////////

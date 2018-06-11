@@ -42,11 +42,9 @@ public class ValueIterator {
     public Action[][] run() {
 
         /*
-        All x/y's and row/col's are fucked up :( CHECK THATTTT!!!!!!
-        
         Copy-paste de performAction functies en 
-        */
-        while (statement()) {
+         */
+        do {
             System.out.println("iter");
             updateV();
             //printArray();
@@ -59,7 +57,7 @@ public class ValueIterator {
                         Q[i] = calculateQ(Action.values()[i], x, y);
                     nextValueFunction[x][y] = getMax(Q);
                 }
-        }
+        } while (statement());
         return getPolicy();
     }
 
@@ -146,6 +144,8 @@ public class ValueIterator {
             for (int y = 0; y < mdp.getHeight(); y++) {
                 double value = valueFunction[x][y].getValue();
                 double nextValue = nextValueFunction[x][y].getValue();
+//                System.out.printf("V: %f, T: %f\n",Math.abs(nextValue - value), threshold);
+//                System.out.println(Math.abs(nextValue - value) > threshold);
                 if (Math.abs(nextValue - value) > threshold && mdp.getField(x, y) != Field.REWARD)
                     return true;
             }

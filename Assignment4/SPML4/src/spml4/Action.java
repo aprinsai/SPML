@@ -53,4 +53,19 @@ public enum Action {
         }
         return null;
     }
+    
+    @Override
+    public String toString() {
+        switch(this) {
+            case UP:
+                return "UP";
+            case DOWN:
+                return "DOWN";
+            case LEFT:
+                return "LEFT";
+            case RIGHT:
+                return "RIGHT";
+        }
+        return "You done fucked up m8.";
+    }
 }
