@@ -25,8 +25,8 @@ public class ValueIterator {
         nextValueFunction = new Quple[mdp.getWidth()][mdp.getHeight()];
         for (int x = 0; x < mdp.getWidth(); x++)
             for (int y = 0; y < mdp.getHeight(); y++) {
-                valueFunction[x][y] = new Quple(0.0, null);
-                nextValueFunction[x][y] = new Quple(0.0, null);
+                valueFunction[x][y] = new Quple(0.0, Action.UP); //Otherwise null, but nullpointers
+                nextValueFunction[x][y] = new Quple(0.0, Action.UP);
             }
 
     }
@@ -47,6 +47,7 @@ public class ValueIterator {
         Copy-paste de performAction functies en 
         */
         while (statement()) {
+            System.out.println("iter");
             updateV();
             //printArray();
             // For each state
@@ -145,12 +146,10 @@ public class ValueIterator {
             for (int y = 0; y < mdp.getHeight(); y++) {
                 double value = valueFunction[x][y].getValue();
                 double nextValue = nextValueFunction[x][y].getValue();
-                // Vooruit kijken (k+1) of achteruit kijken??? -- .
-                System.out.println(Math.abs(nextValue-value));
                 if (Math.abs(nextValue - value) > threshold && mdp.getField(x, y) != Field.REWARD)
                     return true;
             }
-        return true;
+        return false;
     }
 
     /**
