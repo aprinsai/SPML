@@ -1,5 +1,6 @@
 package spml4;
 
+import java.awt.Point;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -133,7 +134,7 @@ public class MarkovDecisionProblem {
 
         terminated = false;
 
-        waittime = 50;
+        waittime = 100;
         showProgress = true;
 
         actionsCounter = 0;
@@ -154,19 +155,39 @@ public class MarkovDecisionProblem {
             doAction(action);
         else {
             double prob = rand.nextDouble();
-            if (prob < getpPerform())
+            if (prob < pPerform)
                 doAction(action);
-            else if (prob < getpPerform() + getpSidestep() / 2)
+            else if (prob < pPerform + pSidestep / 2)
                 doAction(Action.previousAction(action));
-            else if (prob < getpPerform() + getpSidestep())
+            else if (prob < pPerform + pSidestep)
                 doAction(Action.nextAction(action));
-            else if (prob < getpPerform() + getpSidestep() + getpBackstep())
+            else if (prob < pPerform + pSidestep + pBackstep)
                 doAction(Action.backAction(action));
             // else: do nothing (i.e. stay where you are)
         }
         actionsCounter++;
         pDrawMDP();
         return getReward();
+    }
+
+    public Point tryPerformAction(Action action, int xPosition, int yPosition) {
+        // If we are working deterministic, the action is performed
+        Point p = new Point(xPosition, yPosition);
+        if (deterministic)
+            p = tryDoAction(action, xPosition, yPosition);
+        else {
+            double prob = rand.nextDouble();
+            if (prob < pPerform)
+                p = tryDoAction(action, xPosition, yPosition);
+            else if (prob < pPerform + pSidestep / 2)
+                p = tryDoAction(Action.previousAction(action), xPosition, yPosition);
+            else if (prob < pPerform + pSidestep)
+                p = tryDoAction(Action.nextAction(action), xPosition, yPosition);
+            else if (prob < pPerform + pSidestep + pBackstep)
+                p = tryDoAction(Action.backAction(action), xPosition, yPosition);
+            // else: do nothing (i.e. stay where you are)
+        }
+        return p;
     }
 
     /**
@@ -190,6 +211,61 @@ public class MarkovDecisionProblem {
                 moveRight();
                 break;
         }
+    }
+
+    /**
+     * Executes the given action as is (i.e. translates Action to an actual
+     * function being performed)
+     *
+     * @param action
+     * @param xPosition
+     * @param yPosition
+     * @return
+     */
+    private Point tryDoAction(Action action, int xPosition, int yPosition) {
+        switch (action) {
+            case UP:
+                return noMoveUp(xPosition, yPosition);
+            case DOWN:
+                return noMoveDown(xPosition, yPosition);
+            case LEFT:
+                return noMoveLeft(xPosition, yPosition);
+            case RIGHT:
+                return noMoveRight(xPosition, yPosition);
+        }
+        return new Point(xPosition, yPosition); //As error, since -1,-1 doesn't exist.
+    }
+
+    private Point noMoveUp(int xPosition, int yPosition) {
+        if (yPosition < (height - 1) && landscape[xPosition][yPosition + 1] != Field.OBSTACLE) {
+            int newY = yPosition + 1;
+            return new Point(xPosition, newY);
+        } else
+            return new Point(xPosition, yPosition);
+    }
+
+    private Point noMoveDown(int xPosition, int yPosition) {
+        if (yPosition > 0 && landscape[xPosition][yPosition - 1] != Field.OBSTACLE) {
+            int newY = yPosition - 1;
+            return new Point(xPosition, newY);
+        } else
+            return new Point(xPosition, yPosition);
+    }
+
+    private Point noMoveLeft(int xPosition, int yPosition) {
+        if (xPosition > 0 && landscape[xPosition - 1][yPosition] != Field.OBSTACLE) {
+            int newX = xPosition - 1;
+            return new Point(newX, yPosition);
+        } else
+            return new Point(xPosition, yPosition);
+    }
+
+    private Point noMoveRight(int xPosition, int yPosition) {
+        if (xPosition < (width - 1) && landscape[xPosition + 1][yPosition] != Field.OBSTACLE) {
+            int newX = xPosition + 1;
+            return new Point(newX, yPosition);
+        } else
+            return new Point(xPosition, yPosition);
     }
 
     /**
@@ -477,20 +553,15 @@ public class MarkovDecisionProblem {
         }
     }
 
-    public double getpPerform() {
-        return pPerform;
-    }
-
-    public double getpSidestep() {
-        return pSidestep;
-    }
-
-    public double getpBackstep() {
-        return pBackstep;
-    }
-
-    public double getpNoStep() {
-        return pNoStep;
+    public double getTransitionProb(Action mainAction, Action action) {
+        if (action == mainAction)
+            return pPerform;
+        else if (action == Action.nextAction(mainAction) || action == Action.previousAction(mainAction))
+            return pSidestep / 2;
+        else if (action == Action.backAction(mainAction))
+            return pBackstep;
+        else
+            return pNoStep;
     }
 
     /////////////////////////////////////////////////////////
@@ -551,5 +622,4 @@ public class MarkovDecisionProblem {
     public void setShowProgress(boolean show) {
         showProgress = show;
     }
-
 }

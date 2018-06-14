@@ -1,5 +1,8 @@
 package spml4;
 
+import java.awt.Point;
+import java.util.Arrays;
+
 /**
  *
  * @author Pleun
@@ -25,6 +28,14 @@ public class ValueIterator {
         nextValueFunction = new Quple[mdp.getWidth()][mdp.getHeight()];
         for (int x = 0; x < mdp.getWidth(); x++)
             for (int y = 0; y < mdp.getHeight(); y++) {
+                if (mdp.getField(x, y) == Field.REWARD) {
+                    valueFunction[x][y] = new Quple(1.0, Action.UP);
+                    nextValueFunction[x][y] = new Quple(1.0, Action.UP);
+                }
+                if (mdp.getField(x, y) == Field.NEGREWARD) {
+                    valueFunction[x][y] = new Quple(-1.0, Action.UP);
+                    nextValueFunction[x][y] = new Quple(-1.0, Action.UP);
+                }
                 valueFunction[x][y] = new Quple(0.0, Action.UP); //Otherwise null, but nullpointers
                 nextValueFunction[x][y] = new Quple(0.0, Action.UP);
             }
@@ -41,11 +52,8 @@ public class ValueIterator {
      */
     public Action[][] run() {
 
-        /*
-        Copy-paste de performAction functies en 
-         */
         do {
-            System.out.println("iter");
+            System.out.print(".");
             updateV();
             //printArray();
             // For each state
@@ -54,69 +62,14 @@ public class ValueIterator {
                     Quple[] Q = new Quple[Action.values().length]; // One for each movement.
                     //For each action in each state
                     for (int i = 0; i < Action.values().length; i++)
-                        Q[i] = calculateQ(Action.values()[i], x, y);
-                    nextValueFunction[x][y] = getMax(Q);
+                        Q[i] = calculateBellman(Action.values()[i], x, y);
+                    // Don't update the reward field
+                    if(mdp.getField(x,y) != Field.REWARD || mdp.getField(x,y) != Field.NEGREWARD)
+                        nextValueFunction[x][y] = getMax(Q);
                 }
-        } while (statement());
+        } while (checkForThreshold());
+        System.out.println("");
         return getPolicy();
-    }
-
-    /**
-     *
-     * @param x of the state
-     * @param y of the state
-     * @param action performed in that state
-     * @return the probability of performing action in state(x,y)
-     * @throws IlleglArgumentException
-     */
-    private double getTransitionProb(int fromX, int fromY, int toX, int toY, Action action) {
-        //Check if from/to is valid.
-        if (Math.abs(fromX - toX) > 1 || Math.abs(fromY - toY) > 1 || (Math.abs(fromX - toX) == 1 && Math.abs(fromY - toY) == 1))
-            throw new IllegalArgumentException("Invalid from/to position.");
-        //For moving up. Can't really be done pretty with switch can it?
-        switch (action) {
-            case UP:
-                if (fromX == toX && fromY == toY) // Staying
-                    return mdp.getpNoStep();
-                if (toY > fromY) // Going up 
-                    return mdp.getpPerform();
-                if (fromY > toY) // Going down
-                    return mdp.getpBackstep();
-                if (toX < fromX || fromX < toX) // Going left or right
-                    return mdp.getpSidestep() / 2;
-                break;
-            case DOWN:
-                if (fromX == toX && fromY == toY) // Staying
-                    return mdp.getpNoStep();
-                if (toY < fromY) // Going down 
-                    return mdp.getpPerform();
-                if (fromY < toY) // Going down
-                    return mdp.getpBackstep();
-                if (toX > fromX || fromX > toX) // Going left or right
-                    return mdp.getpSidestep() / 2;
-                break;
-            case LEFT:
-                if (fromX == toX && fromY == toY) // Staying
-                    return mdp.getpNoStep();
-                if (toX < fromX) // Going left 
-                    return mdp.getpPerform();
-                if (fromX < toX) // Going right
-                    return mdp.getpBackstep();
-                if (toY > fromY || fromY > toY) // Going up or down
-                    return mdp.getpSidestep() / 2;
-                break;
-            case RIGHT:
-                if (fromX == toX && fromY == toY) // Staying
-                    return mdp.getpNoStep();
-                if (toX < fromX) // Going right 
-                    return mdp.getpPerform();
-                if (fromX < toX) // Going left
-                    return mdp.getpBackstep();
-                if (toY > fromY || fromY > toY) // Going up or down
-                    return mdp.getpSidestep() / 2;
-                break;
-        }
-        return 0.0;
     }
 
     /**
@@ -139,13 +92,14 @@ public class ValueIterator {
      * @return true if there exists a state where the difference between the
      * current state and the previous state is bigger than the threshold.
      */
-    private boolean statement() {
+    private boolean checkForThreshold() {
         for (int x = 0; x < mdp.getWidth(); x++)
             for (int y = 0; y < mdp.getHeight(); y++) {
                 double value = valueFunction[x][y].getValue();
                 double nextValue = nextValueFunction[x][y].getValue();
-//                System.out.printf("V: %f, T: %f\n",Math.abs(nextValue - value), threshold);
+//                System.out.printf("V: %f, T: %f\n", Math.abs(nextValue - value), threshold);
 //                System.out.println(Math.abs(nextValue - value) > threshold);
+
                 if (Math.abs(nextValue - value) > threshold && mdp.getField(x, y) != Field.REWARD)
                     return true;
             }
@@ -164,6 +118,9 @@ public class ValueIterator {
         return max;
     }
 
+    /*
+    Ipv upProb uitrekenen: zeg tegen MDP: doe de stap (zonder te verplaatsen), returnt de x,y van waar je terecht komt. Prop die in de valueFunction. 
+     */
     /**
      *
      * @param action
@@ -171,22 +128,21 @@ public class ValueIterator {
      * @param x
      * @return the Qvalue
      */
-    private Quple calculateQ(Action action, int x, int y) {
-        double upProb = 0.0;
-        if (y < (mdp.getHeight() - 1) && mdp.getField(x, y + 1) != Field.OBSTACLE)
-            upProb = getTransitionProb(x, y, x, y + 1, action) * (mdp.getReward(x, y + 1) + discount * valueFunction[x][y + 1].getValue());
-        double downProb = 0.0;
-        if (y > 0 && mdp.getField(x, y - 1) != Field.OBSTACLE)
-            downProb = getTransitionProb(x, y, x, y - 1, action) * (mdp.getReward(x, y - 1) + discount * valueFunction[x][y - 1].getValue());
-        double leftProb = 0.0;
-        if (x > 0 && mdp.getField(x - 1, y) != Field.OBSTACLE)
-            leftProb = getTransitionProb(x, y, x - 1, y, action) * (mdp.getReward(x - 1, y) + discount * valueFunction[x - 1][y].getValue());
-        double rightProb = 0.0;
-        if (x < (mdp.getWidth() - 1) && mdp.getField(x + 1, y) != Field.OBSTACLE)
-            rightProb = getTransitionProb(x, y, x + 1, y, action) * (mdp.getReward(x + 1, y) + discount * valueFunction[x + 1][y].getValue());
-        return new Quple(upProb + downProb + leftProb + rightProb, action);
-    }
+    private Quple calculateBellman(Action action, int x, int y) {
 
+        mdp.setDeterministic();
+        double [] probPerAction = new double[Action.values().length];
+        for (int i = 0; i < probPerAction.length; i++) {
+            Point p = mdp.tryPerformAction(Action.values()[i], x, y);
+            int newX = p.x;
+            int newY = p.y;
+            probPerAction[i] = mdp.getTransitionProb(action, Action.values()[i]) * (mdp.getReward(newX, newY) + discount * valueFunction[newX][newY].getValue());
+        }
+        mdp.setStochastic();
+        double prob = Arrays.stream(probPerAction).sum();
+        return new Quple(prob, action);
+    }
+    
     /**
      * Updates the valueFunction to the nextValueFunction.
      */
@@ -195,7 +151,7 @@ public class ValueIterator {
             for (int y = 0; y < mdp.getHeight(); y++)
                 valueFunction[x][y] = nextValueFunction[x][y];
     }
-
+    
     private Action[][] getPolicy() {
         Action[][] policy = new Action[mdp.getWidth()][mdp.getHeight()];
         for (int x = 0; x < mdp.getWidth(); x++)
