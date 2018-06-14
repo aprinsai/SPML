@@ -20,6 +20,14 @@ public class Main {
         mdp.setInitialState(0, 0);
 
         ValueIterator vi = new ValueIterator(mdp, 0.005, 0.9);
+        Quple[][] firstValueFunc = vi.getValueIterations();
+        for (int y = 0; y < mdp.getHeight(); y++) {
+            for (int x = 0; x < mdp.getWidth(); x++)
+                System.out.printf("%s ", firstValueFunc[x][y].getValue());
+            System.out.println("");
+        }
+        System.out.println("");
+        
         Action[][] policy = vi.run();
 
         Quple[][] lastValueFunc = vi.getValueIterations();
