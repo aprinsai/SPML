@@ -29,18 +29,16 @@ public class ValueIterator {
         for (int x = 0; x < mdp.getWidth(); x++)
             for (int y = 0; y < mdp.getHeight(); y++) {
                 if (mdp.getField(x, y) == Field.REWARD) {
-                    System.out.println("reward");
-                    valueFunction[x][y] = new Quple(1.0, Action.UP);
-                    nextValueFunction[x][y] = new Quple(1.0, Action.UP);
+                    valueFunction[x][y] = new Quple(1.0, null);
+                    nextValueFunction[x][y] = new Quple(1.0, null);
                 }
                 else if (mdp.getField(x, y) == Field.NEGREWARD) {
-                    System.out.println("negreward");
-                    valueFunction[x][y] = new Quple(-1.0, Action.UP);
-                    nextValueFunction[x][y] = new Quple(-1.0, Action.UP);
+                    valueFunction[x][y] = new Quple(-1.0, null);
+                    nextValueFunction[x][y] = new Quple(-1.0, null);
                 }
                 else {
-                    valueFunction[x][y] = new Quple(0.0, Action.UP); //Otherwise null, but nullpointers
-                    nextValueFunction[x][y] = new Quple(0.0, Action.UP);
+                    valueFunction[x][y] = new Quple(0.0, null); 
+                    nextValueFunction[x][y] = new Quple(0.0, null);
                 }
             }
 
@@ -68,7 +66,7 @@ public class ValueIterator {
                     for (int i = 0; i < Action.values().length; i++)
                         Q[i] = calculateBellman(Action.values()[i], x, y);
                     // Don't update the reward field
-                    if(mdp.getField(x,y) != Field.REWARD || mdp.getField(x,y) != Field.NEGREWARD)
+                    if(mdp.getField(x,y) != Field.REWARD && mdp.getField(x,y) != Field.NEGREWARD && mdp.getField(x,y) != Field.OBSTACLE)
                         nextValueFunction[x][y] = getMax(Q);
                 }
         } while (checkForThreshold());

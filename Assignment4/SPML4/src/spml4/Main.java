@@ -21,7 +21,7 @@ public class Main {
 
         ValueIterator vi = new ValueIterator(mdp, 0.005, 0.9);
         Quple[][] firstValueFunc = vi.getValueIterations();
-        for (int y = 0; y < mdp.getHeight(); y++) {
+        for (int y = mdp.getHeight()-1; y >= 0; y--) {
             for (int x = 0; x < mdp.getWidth(); x++)
                 System.out.printf("%s ", firstValueFunc[x][y].getValue());
             System.out.println("");
@@ -31,13 +31,13 @@ public class Main {
         Action[][] policy = vi.run();
 
         Quple[][] lastValueFunc = vi.getValueIterations();
-        for (int y = 0; y < mdp.getHeight(); y++) {
+        for (int y = mdp.getHeight()-1; y >=0 ; y--) {
             for (int x = 0; x < mdp.getWidth(); x++)
                 System.out.printf("%s ", lastValueFunc[x][y].getValue());
             System.out.println("");
         }
         System.out.println("");
-        for (int y = 0; y < mdp.getHeight(); y++) {
+        for (int y = mdp.getHeight()-1; y >= 0; y--) {
             for (int x = 0; x < mdp.getWidth(); x++)
                 System.out.printf("%s ", policy[x][y]);
             System.out.println("");
