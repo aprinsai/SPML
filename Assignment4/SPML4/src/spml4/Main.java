@@ -22,7 +22,7 @@ public class Main {
         MarkovDecisionProblem mdp = new MarkovDecisionProblem();
         mdp.setInitialState(0, 0);
 
-        Qlearner qLearner = new Qlearner(mdp, 9000, 1, 0.05, 0.3);
+        Qlearner qLearner = new Qlearner(mdp, 10000, 1, 0.05, 0.3);
         Action[][] policy = qLearner.run();
         Quple[][] qFunction = qLearner.getQFunction();
         for (int y = mdp.getHeight() - 1; y >= 0; y--) {

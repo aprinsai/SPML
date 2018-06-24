@@ -1,7 +1,7 @@
 package spml4;
 
 /**
- * We're so funny we're making puns combining Q-value and Tuple haha
+ * This class is used to store an action with its value
  * @author Pleun
  * @author Noukie
  */

@@ -23,6 +23,10 @@ public class ValueIterator {
         this.discount = discount;
     }
 
+    /**
+     * Initializes the valueFunction with Quples 0.0, null
+     * or if it is a terminal state with the reward, null
+     */
     private void intialize() {
         valueFunction = new Quple[mdp.getWidth()][mdp.getHeight()];
         nextValueFunction = new Quple[mdp.getWidth()][mdp.getHeight()];
@@ -44,18 +48,17 @@ public class ValueIterator {
 
     }
 
-    /*
-    
-    Initialize:
-    valueFunction is double array (same dim as mdp) with all 0
-    
-    Q: what is k and what is S?
-    
+    /**
+     * Updates the valueFunction with the nextValueFunction
+     * and for every state, the Bellmen equations are calculated for every action.
+     * nextValueFunction is updated if it is not a terminal state or obstacle.
+     * It does this while the threshold is not exceeded.
+     * @return policy
      */
     public Action[][] run() {
 
         do {
-            System.out.print(".");
+            //System.out.print(".");
             updateV();
             //printArray();
             // For each state
@@ -74,9 +77,6 @@ public class ValueIterator {
         return getPolicy();
     }
 
-    /**
-     * Think this can be public?
-     */
     public void printArray() {
         for (Quple[] valueFunction1 : valueFunction) {
             for (Quple value : valueFunction1)
@@ -124,7 +124,9 @@ public class ValueIterator {
     Ipv upProb uitrekenen: zeg tegen MDP: doe de stap (zonder te verplaatsen), returnt de x,y van waar je terecht komt. Prop die in de valueFunction. 
      */
     /**
-     *
+     * Bellman equations are calculated here for an action
+     * set to deterministic since we don't actually want to DO the step, just see what happens if we would do that.
+     * 
      * @param action
      * @param y
      * @param x

@@ -323,6 +323,7 @@ public class MarkovDecisionProblem {
 
         switch (landscape[xPosition][yPosition]) {
             case EMPTY:
+                finalReward += noReward;
                 return noReward;
             case REWARD:
                 terminated = true;

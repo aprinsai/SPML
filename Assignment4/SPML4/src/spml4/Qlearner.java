@@ -32,6 +32,10 @@ public class Qlearner {
         this.epsilon = epsilon;
     }
 
+    /**
+     * initializes the qFunction with Quples of 0.0, Action.UP
+     * a quple of the reward, null is added to the terminal states.
+     */
     private void intialize() {
         qFunction = new Quple[mdp.getWidth()][mdp.getHeight()];
 //        nextQFunction = new Quple[mdp.getWidth()][mdp.getHeight()];
@@ -45,6 +49,14 @@ public class Qlearner {
                     qFunction[x][y] = new Quple(0.0, Action.UP);
     }
 
+    /**
+     * run() is run for a certain amount of iterations, specified in the main class
+     * while the agent is not in the final state,
+     * an action is set and the agent performs this action in a deterministic setting
+     * the new coordinates are used to give the qFunction a new quple with a Q value that 
+     * is the previous Q value but updated, and the action.
+     * @return 
+     */
     public Action[][] run() {
         //Start in random initial state?
         for (int k = 0; k < nrOfIterations; k++) {
@@ -75,6 +87,12 @@ public class Qlearner {
         return getPolicy();
     }
 
+    /**
+     * tries to perform all actions in the state newX, newY 
+     * @param newX
+     * @param newY
+     * @return Quple with the max value and action
+     */
     private Quple getMaxQ(int newX, int newY) {
         Quple[] qValues = new Quple[Action.values().length];
         for (int i = 0; i < qValues.length; i++) {
@@ -103,6 +121,10 @@ public class Qlearner {
         return max;
     }
 
+    /**
+     * 
+     * @return policy
+     */
     private Action[][] getPolicy() {
         Action[][] policy = new Action[mdp.getWidth()][mdp.getHeight()];
         for (int x = 0; x < mdp.getWidth(); x++)
@@ -111,15 +133,27 @@ public class Qlearner {
         return policy;
     }
 
+    /**
+     * checks whether the current state is the final state.
+     * @return 
+     */
     private boolean isFinalState() {
         return mdp.getField(currX, currY) == Field.NEGREWARD || mdp.getField(currX, currY) == Field.REWARD;
     }
 
+    /**
+     * 
+     * @return random action
+     */
     private Action getRandomAction() {
         int index = rnd.nextInt(Action.values().length);
         return Action.values()[index];
     }
     
+    /**
+     * Either returns a random action or an action with maximum value.
+     * @return Action
+     */
     private Action getGreedyAction() {
         double prob = rnd.nextDouble();
         if (prob > epsilon) {
