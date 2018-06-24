@@ -49,7 +49,7 @@ public class MarkovDecisionProblem {
     private double posReward = 1, // reward for positive end state
             negReward = -1, // reward for negative end state
             noReward = -0.04;	// reward for the other states
-
+    private double finalReward = 0.0;
     // Boolean maintaining if an end state has been reached:
     private boolean terminated = false;
 
@@ -134,7 +134,7 @@ public class MarkovDecisionProblem {
 
         terminated = false;
 
-        waittime = 100;
+        waittime = 0;
         showProgress = true;
 
         actionsCounter = 0;
@@ -326,15 +326,21 @@ public class MarkovDecisionProblem {
                 return noReward;
             case REWARD:
                 terminated = true;
+                finalReward += posReward;
                 return posReward;
             case NEGREWARD:
                 terminated = true;
+                finalReward += negReward;
                 return negReward;
         }
 
         // If something went wrong:
         System.err.println("ERROR: MDP: getReward(): agent is not in an empty, reward or negreward field...");
         return 0;
+    }
+    
+    public double getFinalReward() {
+        return finalReward;
     }
 
     /**

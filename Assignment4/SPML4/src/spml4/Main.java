@@ -22,10 +22,9 @@ public class Main {
         MarkovDecisionProblem mdp = new MarkovDecisionProblem();
         mdp.setInitialState(0, 0);
 
-        Qlearner qLearner = new Qlearner(mdp, 10000, 1, 0.05, 0.3);
+        Qlearner qLearner = new Qlearner(mdp, 9000, 1, 0.05, 0.3);
         Action[][] policy = qLearner.run();
         Quple[][] qFunction = qLearner.getQFunction();
-
         for (int y = mdp.getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x < mdp.getWidth(); x++)
                 System.out.printf("%s ", qFunction[x][y].getAction());
@@ -33,13 +32,18 @@ public class Main {
             System.out.println("");
         }
 
+        double finalReward = 0.0;
         for (int i = 0; i < 100; i++) {
             mdp.performAction(policy[mdp.getStateXPosition()][mdp.getStateYPostion()]);
-            if (mdp.isTerminated())
+            if (mdp.isTerminated()){
+                finalReward += mdp.getFinalReward();
                 mdp.restart();
+            }
         }
         System.out.println("");
         
+        System.out.println("Final reward: "+finalReward);
+
     }
 
     private static void runValueIterator() {
