@@ -1,7 +1,7 @@
 package spml4;
 
 /**
- * This class is used to store an action with its value
+ * This class is a simple data structure used to store an action with its value.
  * @author Pleun
  * @author Noukie
  */

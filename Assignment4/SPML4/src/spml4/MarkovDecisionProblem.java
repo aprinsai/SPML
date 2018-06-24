@@ -12,7 +12,12 @@ import javax.swing.JFrame;
  *
  * Also contains and updates an agent that can roam around in the MDP.
  *
+ * Original author:
  * @author Jered Vroon
+ * 
+ * Additions made by:
+ * @author Pleun Scholten
+ * @author Anouk Prins
  *
  */
 public class MarkovDecisionProblem {
@@ -169,7 +174,15 @@ public class MarkovDecisionProblem {
         pDrawMDP();
         return getReward();
     }
-
+    
+    /**
+     * Tries a given action without actually performing it. 
+     * A Point is used as return type to return both an x and a y position.
+     * @param action
+     * @param xPosition
+     * @param yPosition
+     * @return the coordinates of the new position as a Point, if the action would have been performed. 
+     */
     public Point tryPerformAction(Action action, int xPosition, int yPosition) {
         // If we are working deterministic, the action is performed
         Point p = new Point(xPosition, yPosition);
@@ -212,15 +225,14 @@ public class MarkovDecisionProblem {
                 break;
         }
     }
-
+    
     /**
-     * Executes the given action as is (i.e. translates Action to an actual
-     * function being performed)
+     * Tries the given action and returns the new coordinates as a Point.
      *
      * @param action
      * @param xPosition
      * @param yPosition
-     * @return
+     * @return the new coordinates after performing the action as a Point.
      */
     private Point tryDoAction(Action action, int xPosition, int yPosition) {
         switch (action) {
@@ -233,9 +245,14 @@ public class MarkovDecisionProblem {
             case RIGHT:
                 return noMoveRight(xPosition, yPosition);
         }
-        return new Point(xPosition, yPosition); //As error, since -1,-1 doesn't exist.
+        return new Point(xPosition, yPosition); 
     }
 
+    /**
+     * @param xPosition
+     * @param yPosition
+     * @return the coordinates as a Point that would have been the result of moving up.
+     */
     private Point noMoveUp(int xPosition, int yPosition) {
         if (yPosition < (height - 1) && landscape[xPosition][yPosition + 1] != Field.OBSTACLE) {
             int newY = yPosition + 1;
@@ -244,6 +261,11 @@ public class MarkovDecisionProblem {
             return new Point(xPosition, yPosition);
     }
 
+    /**
+     * @param xPosition
+     * @param yPosition
+     * @return the coordinates as a Point that would have been the result of moving down.
+     */
     private Point noMoveDown(int xPosition, int yPosition) {
         if (yPosition > 0 && landscape[xPosition][yPosition - 1] != Field.OBSTACLE) {
             int newY = yPosition - 1;
@@ -251,7 +273,12 @@ public class MarkovDecisionProblem {
         } else
             return new Point(xPosition, yPosition);
     }
-
+    
+    /**
+     * @param xPosition
+     * @param yPosition
+     * @return the coordinates as a Point that would have been the result of moving left.
+     */
     private Point noMoveLeft(int xPosition, int yPosition) {
         if (xPosition > 0 && landscape[xPosition - 1][yPosition] != Field.OBSTACLE) {
             int newX = xPosition - 1;
@@ -260,6 +287,11 @@ public class MarkovDecisionProblem {
             return new Point(xPosition, yPosition);
     }
 
+    /**
+     * @param xPosition
+     * @param yPosition
+     * @return the coordinates as a Point that would have been the result of moving right.
+     */
     private Point noMoveRight(int xPosition, int yPosition) {
         if (xPosition < (width - 1) && landscape[xPosition + 1][yPosition] != Field.OBSTACLE) {
             int newX = xPosition + 1;
@@ -441,7 +473,7 @@ public class MarkovDecisionProblem {
      */
     public void setProbsStep(double pPerform, double pSidestep, double pBackstep, double pNoStep) {
         double total = pPerform + pSidestep + pBackstep + pNoStep;
-        if (total == 1.0)
+        if (total == 1.0) // @original coders: shouldn't this be total != 1.0?
             System.err.println("ERROR: MDP: setProbsStep: the given probabilities do not add up to 1. I will normalize to compensate.");
         this.pPerform = pPerform / total;
         this.pSidestep = pSidestep / total;
@@ -560,6 +592,11 @@ public class MarkovDecisionProblem {
         }
     }
 
+    /**
+     * @param mainAction the intended action
+     * @param action the action of which the probability is evaluated
+     * @return the probability of a certain action being performed, given the intended action mainAction.
+     */
     public double getTransitionProb(Action mainAction, Action action) {
         if (action == mainAction)
             return pPerform;

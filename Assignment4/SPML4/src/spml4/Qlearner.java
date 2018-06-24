@@ -1,11 +1,10 @@
 package spml4;
 
 import java.awt.Point;
-import java.util.Arrays;
 import java.util.Random;
 
 /**
- *
+ * The Qlearner class is an implementation of q-learning on an MDP.
  * @author Pleun
  * @author Nouknouk
  */
@@ -13,7 +12,6 @@ public class Qlearner {
 
     private MarkovDecisionProblem mdp;
     private Quple[][] qFunction;
-//    private Quple[][] nextQFunction;
     private final int nrOfIterations;
     private final double learningRate;
     private final double discount;
@@ -33,12 +31,11 @@ public class Qlearner {
     }
 
     /**
-     * initializes the qFunction with Quples of 0.0, Action.UP
-     * a quple of the reward, null is added to the terminal states.
+     * Initializes the qFunction with Quples of 0.0, Action.UP
+     * a Quple of the reward, null is used as the action for the terminal states.
      */
     private void intialize() {
         qFunction = new Quple[mdp.getWidth()][mdp.getHeight()];
-//        nextQFunction = new Quple[mdp.getWidth()][mdp.getHeight()];
         for (int x = 0; x < mdp.getWidth(); x++)
             for (int y = 0; y < mdp.getHeight(); y++)
                 if (mdp.getField(x, y) == Field.REWARD)
@@ -55,7 +52,7 @@ public class Qlearner {
      * an action is set and the agent performs this action in a deterministic setting
      * the new coordinates are used to give the qFunction a new quple with a Q value that 
      * is the previous Q value but updated, and the action.
-     * @return 
+     * @return the policy.
      */
     public Action[][] run() {
         //Start in random initial state?
@@ -64,7 +61,6 @@ public class Qlearner {
             currY = mdp.getStateYPostion();
 
             while (!isFinalState()) {
-//                System.out.printf("[%d,%d] : %f\n",currX,currY,qFunction[currX][currY].getValue());
                 //Perform random action and get state
                 Action action = getGreedyAction();
                 mdp.setDeterministic();
@@ -88,7 +84,7 @@ public class Qlearner {
     }
 
     /**
-     * tries to perform all actions in the state newX, newY 
+     * Tries to perform all actions in the state newX, newY 
      * @param newX
      * @param newY
      * @return Quple with the max value and action
@@ -110,8 +106,8 @@ public class Qlearner {
     }
 
     /**
-     * @param Quples array of doubles
-     * @return the maximum value in the scores array.
+     * @param Quples array of Quples
+     * @return the maximum value in the Quples array.
      */
     private Quple getMax(Quple[] Quples) {
         Quple max = null;
@@ -122,8 +118,8 @@ public class Qlearner {
     }
 
     /**
-     * 
-     * @return policy
+     * Creates and returns the policy from the qFunction.
+     * @return the policy created from the qFunction.
      */
     private Action[][] getPolicy() {
         Action[][] policy = new Action[mdp.getWidth()][mdp.getHeight()];
@@ -134,16 +130,15 @@ public class Qlearner {
     }
 
     /**
-     * checks whether the current state is the final state.
-     * @return 
+     * checks whether the current state is the final (terminal) state.
+     * @return true if the current state is a terminal state, else returns false.
      */
     private boolean isFinalState() {
         return mdp.getField(currX, currY) == Field.NEGREWARD || mdp.getField(currX, currY) == Field.REWARD;
     }
 
     /**
-     * 
-     * @return random action
+     * @return a random action
      */
     private Action getRandomAction() {
         int index = rnd.nextInt(Action.values().length);
@@ -151,8 +146,9 @@ public class Qlearner {
     }
     
     /**
-     * Either returns a random action or an action with maximum value.
-     * @return Action
+     * Either returns a random action or an action with maximum value. 
+     * Depends on the value of epsilon
+     * @return an action, either random or the best so far.
      */
     private Action getGreedyAction() {
         double prob = rnd.nextDouble();

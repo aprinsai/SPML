@@ -14,10 +14,13 @@ public class Main {
      * @param args, not used
      */
     public static void main(String[] args) {
-        //runValueIterator();
+        runValueIterator();
         runQlearner();
     }
-
+    
+    /**
+     * Runs a test of q-learning on the standard MDP.
+     */
     private static void runQlearner() {
         MarkovDecisionProblem mdp = new MarkovDecisionProblem();
         mdp.setInitialState(0, 0);
@@ -28,7 +31,6 @@ public class Main {
         for (int y = mdp.getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x < mdp.getWidth(); x++)
                 System.out.printf("%s ", qFunction[x][y].getAction());
-                //System.out.printf("%s: \t %.4s \t", qFunction[x][y].getAction(), qFunction[x][y].getValue());
             System.out.println("");
         }
 
@@ -41,11 +43,12 @@ public class Main {
             }
         }
         System.out.println("");
-        
         System.out.println("Final reward: "+finalReward);
-
     }
-
+    
+    /**
+     * Runs a test of value iteration on the standard MDP.
+     */
     private static void runValueIterator() {
         MarkovDecisionProblem mdp = new MarkovDecisionProblem();
         mdp.setInitialState(0, 0);
@@ -64,7 +67,5 @@ public class Main {
             if (mdp.isTerminated())
                 mdp.restart();
         }
-
     }
-
 }
